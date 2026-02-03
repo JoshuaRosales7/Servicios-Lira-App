@@ -139,6 +139,14 @@ export function BankingDataSection({ clientId, bankingData }: BankingDataSection
 
   return (
     <div className="space-y-6">
+      <div className="flex flex-col gap-1 pb-2 border-b">
+        <h3 className="text-lg font-semibold flex items-center gap-2">
+          <Landmark className="h-5 w-5 text-violet-600" />
+          Recursos Financieros
+        </h3>
+        <p className="text-sm text-muted-foreground">Gestión de cuentas bancarias y propósitos contables.</p>
+      </div>
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

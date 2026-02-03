@@ -64,103 +64,98 @@ export function LegalDataForm({ clientId, legalData }: LegalDataFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Card className="border shadow-sm">
-        <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-6">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-500">
-            <Scale className="h-5 w-5" />
-          </div>
-          <div className="space-y-1">
-            <CardTitle>Estatuto Legal</CardTitle>
-            <CardDescription>
-              Representación legal y vigencia de nombramientos.
-            </CardDescription>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {error && (
-            <div className="flex items-center gap-3 rounded-lg bg-destructive/10 p-4 text-sm text-destructive border border-destructive/20">
-              <AlertCircle className="h-4 w-4 shrink-0" />
-              <span className="font-medium">{error}</span>
-            </div>
-          )}
+    <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="flex flex-col gap-1 pb-2 border-b">
+        <h3 className="text-lg font-semibold flex items-center gap-2">
+          <Scale className="h-5 w-5 text-indigo-500" />
+          Estatuto Legal
+        </h3>
+        <p className="text-sm text-muted-foreground">Representación legal y vigencia de nombramientos.</p>
+      </div>
 
-          {success && (
-            <div className="flex items-center gap-3 rounded-lg bg-emerald-500/10 p-4 text-sm text-emerald-500 border border-emerald-500/20">
-              <CheckCircle2 className="h-4 w-4 shrink-0" />
-              <span className="font-medium">Datos legales actualizados correctamente.</span>
-            </div>
-          )}
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="legal_representative">Representante Legal</Label>
-              <Input
-                id="legal_representative"
-                value={formData.legal_representative}
-                onChange={(e) => handleChange('legal_representative', e.target.value)}
-                placeholder="Nombre Completo"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="representative_dpi">Identificación (DPI)</Label>
-              <Input
-                id="representative_dpi"
-                value={formData.representative_dpi}
-                onChange={(e) => handleChange('representative_dpi', e.target.value)}
-                placeholder="0000 00000 0000"
-              />
-            </div>
+      <div className="space-y-6 pt-2">
+        {error && (
+          <div className="flex items-center gap-3 rounded-lg bg-destructive/10 p-4 text-sm text-destructive border border-destructive/20">
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            <span className="font-medium">{error}</span>
           </div>
+        )}
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="position">Cargo u Oficio</Label>
-              <Input
-                id="position"
-                value={formData.position}
-                onChange={(e) => handleChange('position', e.target.value)}
-                placeholder="Gerente, Administrador, etc."
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="appointment_date">Fecha Nombramiento</Label>
-              <Input
-                id="appointment_date"
-                type="date"
-                value={formData.appointment_date}
-                onChange={(e) => handleChange('appointment_date', e.target.value)}
-              />
-            </div>
+        {success && (
+          <div className="flex items-center gap-3 rounded-lg bg-emerald-500/10 p-4 text-sm text-emerald-500 border border-emerald-500/20">
+            <CheckCircle2 className="h-4 w-4 shrink-0" />
+            <span className="font-medium">Datos legales actualizados correctamente.</span>
           </div>
+        )}
 
+        <div className="grid gap-6 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="documents_expiry">Expiración Documentación Legal</Label>
+            <Label htmlFor="legal_representative">Representante Legal</Label>
             <Input
-              id="documents_expiry"
-              type="date"
-              value={formData.documents_expiry}
-              onChange={(e) => handleChange('documents_expiry', e.target.value)}
+              id="legal_representative"
+              value={formData.legal_representative}
+              onChange={(e) => handleChange('legal_representative', e.target.value)}
+              placeholder="Nombre Completo"
             />
           </div>
-
-          <div className="flex justify-end">
-            <Button type="submit" disabled={isLoading} className="bg-indigo-600 hover:bg-indigo-700 text-white">
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Guardando...
-                </>
-              ) : (
-                <>
-                  <Save className="mr-2 h-4 w-4" />
-                  Actualizar Nombramiento
-                </>
-              )}
-            </Button>
+          <div className="space-y-2">
+            <Label htmlFor="representative_dpi">Identificación (DPI)</Label>
+            <Input
+              id="representative_dpi"
+              value={formData.representative_dpi}
+              onChange={(e) => handleChange('representative_dpi', e.target.value)}
+              placeholder="0000 00000 0000"
+            />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+
+        <div className="grid gap-6 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="position">Cargo u Oficio</Label>
+            <Input
+              id="position"
+              value={formData.position}
+              onChange={(e) => handleChange('position', e.target.value)}
+              placeholder="Gerente, Administrador, etc."
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="appointment_date">Fecha Nombramiento</Label>
+            <Input
+              id="appointment_date"
+              type="date"
+              value={formData.appointment_date}
+              onChange={(e) => handleChange('appointment_date', e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="documents_expiry">Expiración Documentación Legal</Label>
+          <Input
+            id="documents_expiry"
+            type="date"
+            value={formData.documents_expiry}
+            onChange={(e) => handleChange('documents_expiry', e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className="flex justify-end pt-4 border-t">
+        <Button type="submit" disabled={isLoading} className="bg-indigo-600 hover:bg-indigo-700 text-white" size="lg">
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Guardando...
+            </>
+          ) : (
+            <>
+              <Save className="mr-2 h-4 w-4" />
+              Actualizar Nombramiento
+            </>
+          )}
+        </Button>
+      </div>
     </form>
   )
 }

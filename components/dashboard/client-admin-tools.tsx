@@ -60,17 +60,16 @@ export function ClientAdminTools({ clientId, clientEmail, clientNit, userId }: C
     }
 
     return (
-        <Card className="border shadow-sm border-amber-500/20 bg-amber-500/[0.02]">
-            <CardHeader>
-                <div className="flex items-center gap-2">
-                    <ShieldAlert className="h-4 w-4 text-amber-600" />
-                    <CardTitle className="text-base text-amber-700">Herramientas de Administrador</CardTitle>
+        <div className="space-y-6">
+            <div className="flex flex-col gap-1 pb-2 border-b border-amber-200/50">
+                <div className="flex items-center gap-2 text-amber-700">
+                    <ShieldAlert className="h-5 w-5" />
+                    <h3 className="text-lg font-semibold">Herramientas de Administrador</h3>
                 </div>
-                <CardDescription>
-                    Gestión de credenciales y acceso al sistema.
-                </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+                <p className="text-sm text-muted-foreground">Gestión de credenciales y acceso al sistema.</p>
+            </div>
+
+            <div className="space-y-8 pt-2">
                 {!userId ? (
                     <div className="flex flex-col items-center justify-center py-6 text-center space-y-4 rounded-lg border border-dashed border-amber-500/20 bg-amber-500/5">
                         <KeyRound className="h-6 w-6 text-amber-500/50" />
@@ -153,7 +152,7 @@ export function ClientAdminTools({ clientId, clientEmail, clientNit, userId }: C
                         </div>
                     </>
                 )}
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     )
 }

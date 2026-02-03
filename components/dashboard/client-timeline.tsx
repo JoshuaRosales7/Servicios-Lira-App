@@ -17,9 +17,12 @@ import {
     CheckCircle2,
     AlertCircle,
     FileBox,
-    FolderOpen
+    FolderOpen,
+    ChevronDown,
+    ChevronUp
 } from 'lucide-react'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 interface Log {
@@ -68,6 +71,8 @@ const ACTION_CONFIG: Record<string, { icon: any; color: string; label: string }>
 }
 
 export function ClientTimeline({ logs }: ClientTimelineProps) {
+    const [showAll, setShowAll] = React.useState(false)
+
     if (!logs || logs.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center py-12 text-center border rounded-xl bg-muted/20 border-dashed">
@@ -80,8 +85,10 @@ export function ClientTimeline({ logs }: ClientTimelineProps) {
         )
     }
 
+    const displayedLogs = showAll ? logs : logs.slice(0, 5)
+
     // Group logs by date
-    const groupedLogs = logs.reduce((groups, log) => {
+    const groupedLogs = displayedLogs.reduce((groups, log) => {
         const date = new Date(log.created_at).toLocaleDateString('es-GT', {
             weekday: 'long',
             year: 'numeric',
@@ -160,6 +167,29 @@ export function ClientTimeline({ logs }: ClientTimelineProps) {
                     </div>
                 </div>
             ))}
+
+            {logs.length > 5 && (
+                <div className="flex justify-center pt-4 relative z-10">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowAll(!showAll)}
+                        className="text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                    >
+                        {showAll ? (
+                            <>
+                                <ChevronUp className="mr-2 h-3 w-3" />
+                                Ver menos actividad
+                            </>
+                        ) : (
+                            <>
+                                <ChevronDown className="mr-2 h-3 w-3" />
+                                Ver {logs.length - 5} eventos más
+                            </>
+                        )}
+                    </Button>
+                </div>
+            )}
         </div>
     )
 }

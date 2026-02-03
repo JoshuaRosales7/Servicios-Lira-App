@@ -80,259 +80,253 @@ export default async function ClientDetailPage({
   ])
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b">
+    <div className="space-y-6 animate-in fade-in duration-700">
+      {/* Professional Header */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Link href="/dashboard/clients">
-            <Button variant="ghost" size="icon" className="h-8 w-8">
+            <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground hover:text-foreground">
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
-          <div className="space-y-1">
-            <h1 className="text-2xl font-bold tracking-tight">{client.commercial_name || client.legal_name}</h1>
-            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+          <div>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-semibold tracking-tight text-foreground">{client.commercial_name || client.legal_name}</h1>
+              <span className={cn(
+                "px-2.5 py-0.5 rounded-full text-[10px] font-medium tracking-wide border",
+                client.fiscal_status === 'active'
+                  ? "bg-emerald-50/50 text-emerald-600 border-emerald-200 dark:bg-emerald-950/30 dark:border-emerald-800/50 dark:text-emerald-400"
+                  : "bg-amber-50/50 text-amber-600 border-amber-200 dark:bg-amber-950/30 dark:border-amber-800/50 dark:text-amber-400"
+              )}>
+                {client.fiscal_status === 'active' ? 'ACTIVO' : 'INACTIVO'}
+              </span>
+            </div>
+            <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
               <span className="flex items-center gap-1.5">
                 {client.person_type === 'juridica' ? <Building2 className="h-3.5 w-3.5" /> : <User className="h-3.5 w-3.5" />}
-                {client.person_type === 'juridica' ? 'Jurídica' : 'Individual'}
+                {client.person_type === 'juridica' ? 'Persona Jurídica' : 'Persona Individual'}
               </span>
-              <span>•</span>
-              <span className="font-mono">NIT: {client.nit}</span>
-              <span className={cn(
-                "ml-2 px-2 py-0.5 rounded-full text-xs font-medium",
-                client.fiscal_status === 'active'
-                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                  : "bg-amber-500/10 text-amber-600 dark:text-amber-400"
-              )}>
-                {client.fiscal_status === 'active' ? 'Activo' : 'Inactivo'}
-              </span>
+              <span className="text-border">|</span>
+              <span className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded">NIT: {client.nit}</span>
             </div>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <Link href={`/dashboard/clients/${id}/edit`}>
-            <Button variant="outline" size="sm">
-              <Edit className="h-4 w-4 mr-2" />
-              Editar
+            <Button variant="outline" size="sm" className="h-8">
+              <Edit className="h-3.5 w-3.5 mr-2 text-muted-foreground" />
+              Editar Perfil
             </Button>
           </Link>
         </div>
       </div>
 
-      <div className="space-y-6">
-        {/* Summary Stats Bar - Full Width Top */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { label: 'Expedientes', value: Object.values(documentCounts).reduce((a: any, b: any) => a + b, 0), icon: FileText, color: "text-blue-500", bg: "bg-blue-500/10" },
-            { label: 'Notas', value: notes?.length || 0, icon: StickyNote, color: "text-amber-500", bg: "bg-amber-500/10" },
-            { label: 'Cuentas', value: bankingData?.length || 0, icon: Landmark, color: "text-emerald-500", bg: "bg-emerald-500/10" },
-            { label: 'Estado Fiscal', value: fiscalData ? 'Completo' : 'Pendiente', icon: Receipt, color: fiscalData ? "text-indigo-500" : "text-slate-400", bg: fiscalData ? "bg-indigo-500/10" : "bg-slate-100 dark:bg-slate-800" },
-          ].map((item, i) => (
-            <Card key={i} className="border shadow-none bg-card hover:bg-accent/20 transition-colors">
-              <CardContent className="p-4 flex items-center gap-4">
-                <div className={cn("h-10 w-10 rounded-lg flex items-center justify-center shrink-0", item.bg)}>
-                  <item.icon className={cn("h-5 w-5", item.color)} />
-                </div>
-                <div>
-                  <div className="text-xl font-bold leading-none">{item.value}</div>
-                  <div className="text-xs text-muted-foreground font-medium mt-1">{item.label}</div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+      <div className="grid gap-6 lg:grid-cols-12 items-start">
+        {/* Left Column: Profile & Stats */}
+        <div className="lg:col-span-4 xl:col-span-3 space-y-6">
+          {/* Profile Card */}
+          <Card className="border-border/60 shadow-sm overflow-hidden bg-card">
+            <CardHeader className="p-0">
+              <div className="h-24 bg-gradient-to-b from-muted to-background border-b border-border/50"></div>
+            </CardHeader>
+            <CardContent className="px-6 pb-6 -mt-12 relative">
+              <div className="h-24 w-24 rounded-2xl bg-card border-2 border-background shadow-md flex items-center justify-center mb-4">
+                {client.person_type === 'juridica' ? (
+                  <Building2 className="h-10 w-10 text-primary/80" />
+                ) : (
+                  <User className="h-10 w-10 text-primary/80" />
+                )}
+              </div>
 
-        <div className="grid gap-8 lg:grid-cols-12 items-start">
-          {/* Profile Sidebar Info - Sticky */}
-          <div className="lg:col-span-4 space-y-6 sticky top-6">
-            <Card className="border shadow-sm overflow-hidden">
-              <div className="h-24 bg-gradient-to-r from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900" />
-              <CardHeader className="-mt-12 relative flex pb-2">
-                <div className="h-20 w-20 rounded-2xl bg-background shadow-sm border-2 border-background flex items-center justify-center overflow-hidden">
-                  {client.person_type === 'juridica' ? (
-                    <Building2 className="h-10 w-10 text-muted-foreground/50" />
-                  ) : (
-                    <User className="h-10 w-10 text-muted-foreground/50" />
-                  )}
+              <div className="mb-6">
+                <h3 className="font-bold text-xl leading-tight">{client.commercial_name || client.legal_name}</h3>
+                <div className="flex items-center gap-2 mt-2">
+                  <span className={cn(
+                    "px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border",
+                    client.fiscal_status === 'active'
+                      ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
+                      : "bg-amber-500/10 text-amber-600 border-amber-500/20"
+                  )}>
+                    {client.fiscal_status === 'active' ? 'Activo' : 'Inactivo'}
+                  </span>
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-6 pt-2">
-                <div>
-                  <h3 className="font-bold text-lg">{client.commercial_name || client.legal_name}</h3>
-                  <p className="text-sm text-muted-foreground">{client.person_type === 'juridica' ? 'Persona Jurídica' : 'Persona Individual'}</p>
-                </div>
+              </div>
 
-                <div className="space-y-4 pt-4 border-t">
+              <div className="space-y-5">
+                <div className="space-y-1">
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Contacto</p>
                   {client.email && (
-                    <div className="flex items-center gap-3 group">
-                      <div className="h-8 w-8 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center shrink-0 group-hover:bg-blue-100 transition-colors">
-                        <Mail className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                      </div>
-                      <a href={`mailto:${client.email}`} className="text-sm font-medium hover:underline truncate">
-                        {client.email}
-                      </a>
+                    <div className="flex items-center gap-3 py-1">
+                      <Mail className="h-4 w-4 text-muted-foreground" />
+                      <a href={`mailto:${client.email}`} className="text-sm hover:underline truncate text-foreground/90">{client.email}</a>
                     </div>
                   )}
                   {client.phone && (
-                    <div className="flex items-center gap-3 group">
-                      <div className="h-8 w-8 rounded-full bg-green-50 dark:bg-green-900/20 flex items-center justify-center shrink-0 group-hover:bg-green-100 transition-colors">
-                        <Phone className="h-4 w-4 text-green-600 dark:text-green-400" />
-                      </div>
-                      <div className="text-sm font-medium">{client.phone}</div>
+                    <div className="flex items-center gap-3 py-1">
+                      <Phone className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm text-foreground/90">{client.phone}</span>
                     </div>
                   )}
-                  {(client.fiscal_address || client.municipality || client.department) && (
-                    <div className="flex items-start gap-3 group">
-                      <div className="h-8 w-8 rounded-full bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center shrink-0 group-hover:bg-orange-100 transition-colors mt-0.5">
-                        <MapPin className="h-4 w-4 text-orange-600 dark:text-orange-400" />
-                      </div>
-                      <div className="text-sm text-muted-foreground leading-snug">
+                </div>
+
+                {(client.fiscal_address || client.municipality || client.department) && (
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Ubicación</p>
+                    <div className="flex items-start gap-3 py-1">
+                      <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
+                      <div className="text-sm text-foreground/90 leading-snug">
                         {client.fiscal_address}
-                        <div className="mt-0.5 text-xs opacity-80">
+                        <div className="opacity-70 text-xs mt-0.5">
                           {[client.municipality, client.department].filter(Boolean).join(', ')}
                         </div>
                       </div>
                     </div>
-                  )}
-                </div>
-
-                <div className="pt-4 border-t grid grid-cols-2 gap-4">
-                  <div className="bg-muted/30 p-3 rounded-lg">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold mb-1">DPI</p>
-                    <p className="text-xs font-mono font-medium">{client.dpi || 'No registrado'}</p>
                   </div>
-                  <div className="bg-muted/30 p-3 rounded-lg">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold mb-1">Registro</p>
-                    <p className="text-xs font-medium">{new Date(client.created_at).toLocaleDateString()}</p>
+                )}
+
+                <div className="pt-5 border-t border-border/50 grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">DPI</p>
+                    <p className="text-xs font-mono bg-muted/50 px-2 py-1 rounded border border-border/50 inline-block">{client.dpi || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Registro</p>
+                    <p className="text-xs font-mono bg-muted/50 px-2 py-1 rounded border border-border/50 inline-block">{new Date(client.created_at).toLocaleDateString()}</p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border shadow-sm bg-gradient-to-br from-background to-muted/20">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-bold flex items-center justify-between">
-                  <span>Estado del Perfil</span>
-                  <span className="text-emerald-500 text-xs bg-emerald-500/10 px-2 py-0.5 rounded-full">100% Completo</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-                  <div className="h-full bg-emerald-500 w-full rounded-full shadow-[0_0_10px_theme(colors.emerald.400)]" />
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">Toda la documentación requerida ha sido cargada exitosamente.</p>
-              </CardContent>
-            </Card>
-
-
-          </div>
-
-          {/* Main Content Sections */}
-          <div className="lg:col-span-8 space-y-8">
-            {/* Tabbed Detailed Sections */}
-            <Tabs defaultValue="timeline" className="space-y-6">
-              <div className="bg-accent/40 backdrop-blur-md p-1.5 rounded-2xl border border-border/40 inline-flex flex-wrap shadow-inner w-full overflow-x-auto">
-                <TabsList className="bg-transparent h-12 flex-1 gap-1">
-                  <TabsTrigger value="timeline" className="flex-1 rounded-xl font-bold text-xs uppercase tracking-widest gap-2 data-[state=active]:bg-card data-[state=active]:shadow-xl transition-all px-4">
-                    <Activity className="h-4 w-4 shrink-0" />
-                    <span className="hidden lg:inline">Historia</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="fiscal" className="flex-1 rounded-xl font-bold text-xs uppercase tracking-widest gap-2 data-[state=active]:bg-card data-[state=active]:shadow-xl transition-all px-4">
-                    <Receipt className="h-4 w-4 shrink-0" />
-                    <span className="hidden lg:inline">Fiscal</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="legal" className="flex-1 rounded-xl font-bold text-xs uppercase tracking-widest gap-2 data-[state=active]:bg-card data-[state=active]:shadow-xl transition-all px-4">
-                    <Scale className="h-4 w-4 shrink-0" />
-                    <span className="hidden lg:inline">Legal</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="banking" className="flex-1 rounded-xl font-bold text-xs uppercase tracking-widest gap-2 data-[state=active]:bg-card data-[state=active]:shadow-xl transition-all px-4">
-                    <Landmark className="h-4 w-4 shrink-0" />
-                    <span className="hidden lg:inline">Banca</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="accounting" className="flex-1 rounded-xl font-bold text-xs uppercase tracking-widest gap-2 data-[state=active]:bg-card data-[state=active]:shadow-xl transition-all px-4">
-                    <Receipt className="h-4 w-4 shrink-0" />
-                    <span className="hidden lg:inline">Contab.</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="notes" className="flex-1 rounded-xl font-bold text-xs uppercase tracking-widest gap-2 data-[state=active]:bg-card data-[state=active]:shadow-xl transition-all px-4">
-                    <StickyNote className="h-4 w-4 shrink-0" />
-                    <span className="hidden lg:inline">Notas</span>
-                  </TabsTrigger>
-                  {isAdmin && (
-                    <TabsTrigger value="admin" className="flex-1 rounded-xl font-bold text-xs uppercase tracking-widest gap-2 data-[state=active]:bg-card data-[state=active]:shadow-xl transition-all px-4">
-                      <Fingerprint className="h-4 w-4 shrink-0" />
-                      <span className="hidden lg:inline">Admin</span>
-                    </TabsTrigger>
-                  )}
-                </TabsList>
               </div>
+            </CardContent>
+          </Card>
 
-              <div className="animate-in fade-in zoom-in-95 duration-500">
-                <TabsContent value="timeline" className="outline-none">
-                  <div className="bg-card/50 backdrop-blur-sm border rounded-2xl p-6 shadow-sm">
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="p-2 bg-primary/10 rounded-lg">
-                        <Activity className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-bold">Línea de Tiempo</h3>
-                        <p className="text-sm text-muted-foreground">Actividad reciente e hitos importantes del cliente.</p>
-                      </div>
+          {/* Key Indicators (Stacked in Sidebar) */}
+          <div className="grid grid-cols-1 gap-3">
+            <Card className="border shadow-none bg-blue-50/30 border-blue-100 dark:bg-blue-900/10 dark:border-blue-900/30">
+              <CardContent className="p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-100 rounded-lg dark:bg-blue-900/40 text-blue-600 dark:text-blue-400">
+                    <FileText className="h-4 w-4" />
+                  </div>
+                  <span className="text-sm font-medium text-foreground/80">Expedientes</span>
+                </div>
+                <span className="text-xl font-bold">{Object.values(documentCounts).reduce((a: any, b: any) => a + b, 0)}</span>
+              </CardContent>
+            </Card>
+            <Card className="border shadow-none bg-amber-50/30 border-amber-100 dark:bg-amber-900/10 dark:border-amber-900/30">
+              <CardContent className="p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-amber-100 rounded-lg dark:bg-amber-900/40 text-amber-600 dark:text-amber-400">
+                    <StickyNote className="h-4 w-4" />
+                  </div>
+                  <span className="text-sm font-medium text-foreground/80">Notas</span>
+                </div>
+                <span className="text-xl font-bold">{notes?.length || 0}</span>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* Main Content Sections */}
+        <div className="lg:col-span-8 xl:col-span-9 space-y-6">
+
+          <Tabs defaultValue="timeline" className="w-full">
+            <div className="sticky top-[4.5rem] z-30 bg-background/95 backdrop-blur-sm pb-4 pt-1 border-b mb-6">
+              <TabsList className="bg-transparent h-auto w-full justify-start gap-6 p-0">
+                {[
+                  { value: 'timeline', label: 'Historia', icon: Activity },
+                  { value: 'fiscal', label: 'Fiscal', icon: Receipt },
+                  { value: 'legal', label: 'Legal', icon: Scale },
+                  { value: 'banking', label: 'Banca', icon: Landmark },
+                  { value: 'accounting', label: 'Contabilidad', icon: Receipt },
+                  { value: 'notes', label: 'Notas', icon: StickyNote },
+                  ...(isAdmin ? [{ value: 'admin', label: 'Admin', icon: Fingerprint }] : [])
+                ].map((tab) => (
+                  <TabsTrigger
+                    key={tab.value}
+                    value={tab.value}
+                    className="relative h-9 rounded-none border-b-2 border-transparent bg-transparent px-2 pb-3 pt-2 font-medium text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none hover:text-foreground"
+                  >
+                    <div className="flex items-center gap-2">
+                      <tab.icon className="h-4 w-4" />
+                      <span>{tab.label}</span>
                     </div>
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </div>
+
+            <div className="min-h-[400px] animate-in slide-in-from-bottom-2 fade-in duration-500">
+              <TabsContent value="timeline" className="mt-0 outline-none">
+                <div className="rounded-xl border bg-card text-card-foreground shadow-sm min-h-[750px]">
+                  <div className="p-6">
+                    <h3 className="text-lg font-semibold mb-1">Actividad Reciente</h3>
+                    <p className="text-sm text-muted-foreground mb-6">Registro cronológico de movimientos y cambios.</p>
                     <ClientTimeline logs={logs as any[]} />
                   </div>
-                </TabsContent>
+                </div>
+              </TabsContent>
 
-                <TabsContent value="fiscal" className="outline-none">
+              <TabsContent value="fiscal" className="mt-0 outline-none">
+                <div className="rounded-xl border bg-card text-card-foreground shadow-sm min-h-[750px] p-6">
                   <FiscalDataForm clientId={id} fiscalData={fiscalData} />
-                </TabsContent>
+                </div>
+              </TabsContent>
 
-                <TabsContent value="legal" className="outline-none">
+              <TabsContent value="legal" className="mt-0 outline-none">
+                <div className="rounded-xl border bg-card text-card-foreground shadow-sm min-h-[750px] p-6">
                   <LegalDataForm clientId={id} legalData={legalData} />
-                </TabsContent>
+                </div>
+              </TabsContent>
 
-                <TabsContent value="banking" className="outline-none">
+              <TabsContent value="banking" className="mt-0 outline-none">
+                <div className="rounded-xl border bg-card text-card-foreground shadow-sm min-h-[750px] p-6">
                   <BankingDataSection clientId={id} bankingData={bankingData || []} />
-                </TabsContent>
+                </div>
+              </TabsContent>
 
-                <TabsContent value="accounting" className="outline-none">
+              <TabsContent value="accounting" className="mt-0 outline-none">
+                <div className="rounded-xl border bg-card text-card-foreground shadow-sm min-h-[750px] p-6">
                   <AccountingDataForm clientId={id} accountingData={accountingData} />
-                </TabsContent>
+                </div>
+              </TabsContent>
 
-                <TabsContent value="notes" className="outline-none">
+              <TabsContent value="notes" className="mt-0 outline-none">
+                <div className="rounded-xl border bg-card text-card-foreground shadow-sm min-h-[750px] p-6">
                   <NotesSection clientId={id} notes={notes || []} />
-                </TabsContent>
+                </div>
+              </TabsContent>
 
-                {isAdmin && (
-                  <TabsContent value="admin" className="outline-none">
+              {isAdmin && (
+                <TabsContent value="admin" className="mt-0 outline-none">
+                  <div className="rounded-xl border bg-card text-card-foreground shadow-sm min-h-[750px] p-6">
                     <ClientAdminTools
                       clientId={client.id}
                       clientEmail={client.email || ''}
                       clientNit={client.nit}
                       userId={client.user_id || null}
                     />
-                  </TabsContent>
-                )}
-              </div>
-            </Tabs>
+                  </div>
+                </TabsContent>
+              )}
+            </div>
+          </Tabs>
 
+        </div>
+      </div>
+
+      {/* Documents Section - Full Width of Content */}
+      <div className="pt-4 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+        <div className="flex items-center justify-between gap-4 mb-6 pt-6 border-t">
+          <div className="space-y-1">
+            <h2 className="text-xl font-semibold tracking-tight">Gestión Documental</h2>
+            <p className="text-sm text-muted-foreground">Repositorio centralizado de expedientes y archivos fiscales.</p>
           </div>
         </div>
 
-        {/* Documents Section - Full Width */}
-        <div className="space-y-6 pt-6 border-t animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold flex items-center gap-2 text-foreground/90">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <FileText className="h-5 w-5 text-primary" />
-              </div>
-              Gestor de Documentos
-            </h2>
-            <p className="text-sm text-muted-foreground hidden sm:block">
-              Administra, organiza y comparte todos los archivos de este cliente.
-            </p>
-          </div>
-          <DocumentsSection clientId={id} initialCounts={documentCounts} />
-        </div>
+        <Card className="border-border/50 shadow-sm bg-card/50">
+          <CardContent className="p-0">
+            <DocumentsSection clientId={id} initialCounts={documentCounts} />
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

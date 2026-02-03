@@ -156,6 +156,14 @@ export function NotesSection({ clientId, notes }: NotesSectionProps) {
 
   return (
     <div className="space-y-6">
+      <div className="flex flex-col gap-1 pb-2 border-b">
+        <h3 className="text-lg font-semibold flex items-center gap-2">
+          <StickyNote className="h-5 w-5 text-amber-500" />
+          Bitácora de Notas
+        </h3>
+        <p className="text-sm text-muted-foreground">Registro de recordatorios y anotaciones importantes.</p>
+      </div>
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
