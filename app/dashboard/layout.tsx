@@ -24,13 +24,13 @@ export default async function DashboardLayout({
     .single()
 
   return (
-    <div className="flex h-screen overflow-hidden bg-muted/20">
+    <div className="flex h-screen bg-gray-50">
       <CommandMenu />
       <Sidebar user={user} profile={profile} />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <TopBar isAdmin={profile?.role === 'admin'} />
-        <main className="flex-1 overflow-y-auto bg-muted/20">
-          <div className="p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto">
+        <main className="flex-1 overflow-y-auto bg-white">
+          <div className="p-6">
             {children}
           </div>
         </main>

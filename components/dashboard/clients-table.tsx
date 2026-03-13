@@ -56,34 +56,34 @@ export function ClientsTable({ clients }: ClientsTableProps) {
   }
 
   return (
-    <>
+    <div>
       <Table>
-        <TableHeader className="bg-muted/50 border-b">
-          <TableRow className="hover:bg-transparent">
-            <TableHead className="px-6 font-bold text-xs uppercase tracking-wider text-muted-foreground py-4">Cliente</TableHead>
-            <TableHead className="font-bold text-xs uppercase tracking-wider text-muted-foreground">Tipo</TableHead>
-            <TableHead className="font-bold text-xs uppercase tracking-wider text-muted-foreground">Contacto</TableHead>
-            <TableHead className="font-bold text-xs uppercase tracking-wider text-muted-foreground">Ubicación</TableHead>
-            <TableHead className="font-bold text-xs uppercase tracking-wider text-muted-foreground text-right">Estado</TableHead>
-            <TableHead className="w-[60px] px-6"></TableHead>
+        <TableHeader>
+          <TableRow className="border-b">
+            <TableHead className="font-semibold text-gray-900">Cliente</TableHead>
+            <TableHead className="font-semibold text-gray-900">Tipo</TableHead>
+            <TableHead className="font-semibold text-gray-900">Contacto</TableHead>
+            <TableHead className="font-semibold text-gray-900">Ubicación</TableHead>
+            <TableHead className="font-semibold text-gray-900 text-right">Estado</TableHead>
+            <TableHead className="w-[60px]"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {clients.map((client) => (
-            <TableRow key={client.id} className="group transition-colors border-b">
-              <TableCell className="px-6 py-4">
+            <TableRow key={client.id} className="border-b hover:bg-gray-50">
+              <TableCell className="py-4">
                 <Link
                   href={`/dashboard/clients/${client.id}`}
-                  className="flex items-center gap-3 group/link"
+                  className="flex items-center gap-3 group"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted border font-bold text-muted-foreground text-sm shrink-0 transition-colors group-hover/link:bg-primary group-hover/link:text-primary-foreground">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 font-bold text-gray-600 text-sm">
                     {(client.commercial_name || client.legal_name || 'C')[0].toUpperCase()}
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-semibold text-sm group-hover/link:text-primary transition-colors">
+                    <span className="font-medium text-gray-900 group-hover:text-blue-600">
                       {client.commercial_name || client.legal_name}
                     </span>
-                    <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight">
+                    <span className="text-xs text-gray-500 font-mono">
                       NIT: {client.nit || '---'}
                     </span>
                   </div>
@@ -91,76 +91,75 @@ export function ClientsTable({ clients }: ClientsTableProps) {
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
-                  <div className="text-muted-foreground/60">
+                  <div className="text-gray-400">
                     {client.person_type === 'juridica' ? (
-                      <Building2 className="h-3.5 w-3.5" />
+                      <Building2 className="h-4 w-4" />
                     ) : (
-                      <User className="h-3.5 w-3.5" />
+                      <User className="h-4 w-4" />
                     )}
                   </div>
-                  <span className="text-xs font-medium text-muted-foreground">
+                  <span className="text-sm text-gray-700">
                     {client.person_type === 'juridica' ? 'Jurídica' : 'Individual'}
                   </span>
                 </div>
               </TableCell>
               <TableCell>
-                <div className="space-y-0.5 py-1">
+                <div className="space-y-1">
                   {client.email && (
-                    <div className="flex items-center gap-2 text-xs text-foreground/80">
-                      <Mail className="h-3 w-3 text-muted-foreground" />
-                      {client.email}
+                    <div className="flex items-center gap-2 text-sm text-gray-700">
+                      <Mail className="h-3.5 w-3.5 text-gray-400" />
+                      <span className="truncate max-w-[180px]">{client.email}</span>
                     </div>
                   )}
                   {client.phone && (
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Phone className="h-3 w-3 text-muted-foreground" />
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <Phone className="h-3.5 w-3.5 text-gray-400" />
                       {client.phone}
                     </div>
                   )}
                   {!client.email && !client.phone && (
-                    <span className="text-muted-foreground/30 text-[10px] font-bold">---</span>
+                    <span className="text-gray-400 text-xs">---</span>
                   )}
                 </div>
               </TableCell>
               <TableCell>
                 {client.municipality || client.department ? (
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <MapPin className="h-3 w-3 opacity-40 shrink-0" />
-                    <span className="truncate max-w-[120px]">{[client.municipality, client.department].filter(Boolean).join(', ')}</span>
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <MapPin className="h-3.5 w-3.5 text-gray-400" />
+                    <span className="truncate max-w-[140px]">{[client.municipality, client.department].filter(Boolean).join(', ')}</span>
                   </div>
                 ) : (
-                  <span className="text-muted-foreground/30 text-[10px] font-bold">---</span>
+                  <span className="text-gray-400 text-xs">---</span>
                 )}
               </TableCell>
               <TableCell className="text-right">
                 <span
-                  className={cn(
-                    "inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight",
+                  className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
                     client.fiscal_status === 'active'
-                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-100 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900/50'
+                      ? 'bg-green-100 text-green-800'
                       : client.fiscal_status === 'inactive'
-                        ? 'bg-amber-50 text-amber-700 border border-amber-100 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-900/50'
-                        : 'bg-muted text-muted-foreground border border-border'
-                  )}
+                        ? 'bg-yellow-100 text-yellow-800'
+                        : 'bg-gray-100 text-gray-800'
+                  }`}
                 >
                   {client.fiscal_status === 'active' ? 'Activo' : client.fiscal_status === 'inactive' ? 'Inactivo' : client.fiscal_status}
                 </span>
               </TableCell>
-              <TableCell className="px-6">
+              <TableCell>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48 p-1">
-                    <DropdownMenuItem asChild className="text-xs font-semibold px-3 py-2">
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuItem asChild>
                       <Link href={`/dashboard/clients/${client.id}`}>
                         <Eye className="h-3.5 w-3.5 mr-2" />
                         Ver Detalles
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild className="text-xs font-semibold px-3 py-2">
+                    <DropdownMenuItem asChild>
                       <Link href={`/dashboard/clients/${client.id}/edit`}>
                         <Edit className="h-3.5 w-3.5 mr-2" />
                         Editar Perfil
@@ -168,7 +167,7 @@ export function ClientsTable({ clients }: ClientsTableProps) {
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
-                      className="text-xs font-semibold px-3 py-2 text-destructive focus:text-destructive"
+                      className="text-red-600 focus:text-red-600"
                       onClick={() => setDeleteId(client.id)}
                     >
                       <Trash2 className="h-3.5 w-3.5 mr-2" />
@@ -204,6 +203,6 @@ export function ClientsTable({ clients }: ClientsTableProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </>
+    </div>
   )
 }

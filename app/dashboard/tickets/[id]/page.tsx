@@ -72,7 +72,7 @@ export default async function TicketDetailPage(props: PageProps) {
     const priority = priorityMap[ticket.priority]
 
     return (
-        <div className="space-y-6 h-[calc(100vh-100px)] flex flex-col animate-in fade-in slide-in-from-bottom-2 duration-500">
+        <div className="space-y-6 h-[calc(100vh-100px)] flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header */}
             <div className="flex items-start justify-between border-b pb-4 bg-background z-10">
                 <div className="space-y-1">

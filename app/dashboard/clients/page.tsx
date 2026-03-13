@@ -2,15 +2,16 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Plus, Users, Filter } from 'lucide-react'
+import { Plus, Users, CheckCircle2, XCircle, AlertCircle, Briefcase } from 'lucide-react'
 import { ClientSearch } from '@/components/dashboard/client-search'
 import { Suspense } from 'react'
 import { ClientsList } from './clients-list'
 import { ClientsListSkeleton } from './clients-list-skeleton'
+import { ClientSort } from '@/components/dashboard/client-sort'
+import { cn } from '@/lib/utils'
 
-// Helper for stats - separate query to avoid blocking if possible, or just simpler
 async function getClientStats(supabase: any) {
-  const { data } = await supabase.from('clients').select('fiscal_status')
+  const { data } = await supabase.from('clients').select('fiscal_status, person_type')
   return data || []
 }
 
@@ -25,93 +26,79 @@ export default async function ClientsPage({
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single()
+  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
 
   if (profile?.role === 'client') {
-    const { data: clientRecord } = await supabase
-      .from('clients')
-      .select('id')
-      .eq('user_id', user.id)
-      .single()
-
-    if (clientRecord) {
-      redirect(`/dashboard/clients/${clientRecord.id}`)
-    } else {
-      redirect('/dashboard')
-    }
+    const { data: clientRecord } = await supabase.from('clients').select('id').eq('user_id', user.id).single()
+    if (clientRecord) redirect(`/dashboard/clients/${clientRecord.id}`)
+    else redirect('/dashboard')
   }
 
-  // Fetch stats generally (global)
   const allClients = await getClientStats(supabase)
+  const activeCount = allClients.filter((c: any) => c.fiscal_status === 'active').length
+  const inactiveCount = allClients.filter((c: any) => c.fiscal_status === 'inactive').length
+  const suspendedCount = allClients.filter((c: any) => c.fiscal_status === 'suspended').length
+
+  const statCards = [
+    { title: 'Total Clientes', value: allClients.length, Icon: Users, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-950' },
+    { title: 'Activos', value: activeCount, Icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-950' },
+    { title: 'Inactivos', value: inactiveCount, Icon: AlertCircle, color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-950' },
+    { title: 'Suspendidos', value: suspendedCount, Icon: XCircle, color: 'text-rose-600', bg: 'bg-rose-50 dark:bg-rose-950' },
+  ]
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-700">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            Clientes
-          </h1>
-          <p className="text-muted-foreground font-medium">
-            Gestión de cartera y expedientes administrativos.
-          </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-blue-50 dark:bg-blue-950 rounded-lg">
+            <Briefcase className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Directorio de Clientes</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Gestión integral de cartera y expedientes</p>
+          </div>
         </div>
         <Link href="/dashboard/clients/new">
-          <Button className="rounded-lg px-5 h-10 font-bold space-x-2">
-            <Plus className="h-4 w-4" />
-            <span>Nuevo Cliente</span>
+          <Button size="sm" className="h-9 rounded-lg">
+            <Plus className="w-4 h-4 mr-1.5" /> Nuevo Cliente
           </Button>
         </Link>
       </div>
 
-      {/* Hero Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="p-5 rounded-xl bg-card border shadow-sm flex items-center gap-4">
-          <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center text-muted-foreground">
-            <Users className="h-5 w-5" />
+      {/* Stats */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {statCards.map((stat, i) => (
+          <div key={i} className="bg-slate-50/80 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">{stat.title}</span>
+              <div className={cn("p-2 rounded-lg", stat.bg)}>
+                <stat.Icon className={cn("w-4 h-4", stat.color)} />
+              </div>
+            </div>
+            <p className="text-2xl font-bold text-slate-900 dark:text-white">{stat.value}</p>
           </div>
-          <div>
-            <p className="text-xl font-bold tracking-tight">{allClients.length}</p>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Total</p>
+        ))}
+      </div>
+
+      {/* Search / Filter */}
+      <div className="bg-slate-50/50 dark:bg-slate-900/20 rounded-xl border border-slate-200 dark:border-slate-800 p-4">
+        <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
+          <div className="w-full lg:w-3/5 flex-1">
+            <ClientSearch />
           </div>
-        </div>
-        <div className="p-5 rounded-xl bg-card border shadow-sm flex items-center gap-4">
-          <div className="h-10 w-10 rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400 flex items-center justify-center">
-            <Users className="h-5 w-5" />
-          </div>
-          <div>
-            <p className="text-xl font-bold tracking-tight">{allClients.filter((c: any) => c.fiscal_status === 'active').length}</p>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Operativos</p>
-          </div>
-        </div>
-        <div className="p-5 rounded-xl bg-card border shadow-sm flex items-center gap-4">
-          <div className="h-10 w-10 rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-950/30 dark:text-amber-400 flex items-center justify-center">
-            <Users className="h-5 w-5" />
-          </div>
-          <div>
-            <p className="text-xl font-bold tracking-tight">{allClients.filter((c: any) => c.fiscal_status === 'suspended').length}</p>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Suspendidos</p>
+          <div className="w-full lg:w-auto flex justify-end shrink-0">
+            <ClientSort />
           </div>
         </div>
       </div>
 
-      {/* Search & Filter Bar Section */}
-      <div className="bg-muted/30 p-5 rounded-xl border space-y-4">
-        <div className="flex items-center gap-2 mb-1">
-          <Filter className="h-3.5 w-3.5 text-muted-foreground" />
-          <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Filtros de búsqueda</h2>
-        </div>
-        <ClientSearch />
+      {/* Table */}
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+        <Suspense fallback={<ClientsListSkeleton />}>
+          <ClientsList searchParams={params} />
+        </Suspense>
       </div>
-
-      {/* Results Section */}
-      <Suspense fallback={<ClientsListSkeleton />} key={JSON.stringify(params)}>
-        <ClientsList searchParams={params} />
-      </Suspense>
     </div>
   )
 }

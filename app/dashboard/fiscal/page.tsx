@@ -1,11 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Receipt, AlertCircle, ShieldCheck, ArrowRight, Calendar } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { FiscalSearch } from '@/components/dashboard/fiscal-search'
-import { Button } from '@/components/ui/button'
 import { ExportButton } from '@/components/dashboard/export-button'
 
 export default async function FiscalPage({
@@ -19,222 +17,151 @@ export default async function FiscalPage({
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single()
-
+  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
   if (profile?.role === 'client') {
-    const { data: clientRecord } = await supabase
-      .from('clients')
-      .select('id')
-      .eq('user_id', user.id)
-      .single()
+    const { data: clientRecord } = await supabase.from('clients').select('id').eq('user_id', user.id).single()
     if (clientRecord) redirect(`/dashboard/clients/${clientRecord.id}`)
   }
 
   const search = params.search || ''
   const regime = params.regime || 'all'
   const frequency = params.frequency || 'all'
-
-  // Determine if we need strict filtering on child
   const hasChildFilters = regime !== 'all' || frequency !== 'all'
+  const selectString = hasChildFilters ? '*, fiscal_data!inner (*)' : '*, fiscal_data (*)'
 
-  // Use !inner if we are strictly filtering by fiscal properties, otherwise left join to show missing data too
-  const selectString = hasChildFilters
-    ? '*, fiscal_data!inner (*)'
-    : '*, fiscal_data (*)'
-
-  let query = supabase
-    .from('clients')
-    .select(selectString)
-    .order('legal_name')
-
-  if (search) {
-    query = query.or(`legal_name.ilike.%${search}%,commercial_name.ilike.%${search}%,nit.ilike.%${search}%`)
-  }
-
-  if (regime !== 'all') {
-    query = query.eq('fiscal_data.tax_regime', regime)
-  }
-
-  if (frequency !== 'all') {
-    query = query.eq('fiscal_data.declaration_frequency', frequency)
-  }
+  let query = supabase.from('clients').select(selectString).order('legal_name')
+  if (search) query = query.or(`legal_name.ilike.%${search}%,commercial_name.ilike.%${search}%,nit.ilike.%${search}%`)
+  if (regime !== 'all') query = query.eq('fiscal_data.tax_regime', regime)
+  if (frequency !== 'all') query = query.eq('fiscal_data.declaration_frequency', frequency)
 
   const { data: clients } = await query.limit(100)
-
   const clientsWithFiscal = clients?.filter((c) => c.fiscal_data) || []
   const clientsWithoutFiscal = clients?.filter((c) => !c.fiscal_data) || []
   const displayingClients = clients || []
 
-  // Prepare Export Data
   const exportData = displayingClients.map(c => ({
-    NombreLegal: c.legal_name,
-    NIT: c.nit,
+    NombreLegal: c.legal_name, NIT: c.nit,
     Regimen: c.fiscal_data?.tax_regime || 'No Registrado',
     Frecuencia: c.fiscal_data?.declaration_frequency || '-',
-    RetencionISR: c.fiscal_data?.isr_withholding ? 'Si' : 'No'
+    RetencionISR: c.fiscal_data?.isr_withholding ? 'Si' : 'No',
   }))
 
-  // Stats definition
   const stats = [
-    {
-      name: 'Eficacia Fiscal',
-      value: clientsWithFiscal.length,
-      icon: ShieldCheck,
-      description: 'Expedientes completos',
-    },
-    {
-      name: 'En Proceso',
-      value: clientsWithoutFiscal.length,
-      icon: AlertCircle,
-      description: 'Requieren atención',
-    },
-    {
-      name: 'Regímenes',
-      value: new Set(clientsWithFiscal.map(c => c.fiscal_data?.tax_regime).filter(Boolean)).size,
-      icon: Receipt,
-      description: 'Tipos en vista',
-    },
+    { name: 'Completos', value: clientsWithFiscal.length, Icon: ShieldCheck, color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-950' },
+    { name: 'En Proceso', value: clientsWithoutFiscal.length, Icon: AlertCircle, color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-950' },
+    { name: 'Regímenes', value: new Set(clientsWithFiscal.map(c => c.fiscal_data?.tax_regime).filter(Boolean)).size, Icon: Receipt, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-950' },
   ]
 
+  const completePct = Math.round((clientsWithFiscal.length / (displayingClients.length || 1)) * 100)
+
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-700">
-      {/* Header Section */}
-      <div className="pb-8 border-b">
-        <div className="flex flex-col md:flex-row justify-between gap-4">
-          <div className="space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground">
-              Cumplimiento Fiscal
-            </h1>
-            <p className="text-muted-foreground font-medium">
-              Gestión estratégica de obligaciones tributarias y regímenes contributivos.
-            </p>
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-emerald-50 dark:bg-emerald-950 rounded-lg">
+            <Receipt className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
           </div>
           <div>
-            <ExportButton
-              data={exportData}
-              filename="reporte-fiscal"
-              label="Exportar CSV"
-            />
+            <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Cumplimiento Fiscal</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Gestión de obligaciones tributarias y regímenes.</p>
           </div>
         </div>
+        <ExportButton data={exportData} filename="reporte-fiscal" label="Exportar CSV" />
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-3">
         {stats.map((stat) => (
-          <Card key={stat.name} className="border shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {stat.name}
-              </CardTitle>
-              <stat.icon className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground pt-1">
-                {stat.description}
-              </p>
-            </CardContent>
-          </Card>
+          <div key={stat.name} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">{stat.name}</span>
+              <div className={cn("p-2 rounded-lg", stat.bg)}>
+                <stat.Icon className={cn("w-4 h-4", stat.color)} />
+              </div>
+            </div>
+            <p className="text-2xl font-bold text-slate-900 dark:text-white">{stat.value}</p>
+          </div>
         ))}
       </div>
 
-      <FiscalSearch />
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4">
+        <FiscalSearch />
+      </div>
 
-      <div className="grid gap-8 lg:grid-cols-3">
-        {/* Main Content: Fiscal Directory */}
-        <div className="lg:col-span-2 space-y-6">
-          <Card className="border shadow-sm">
-            <CardHeader>
-              <CardTitle>Directorio de Contribuyentes</CardTitle>
-              <CardDescription>Control normativo de regímenes y frecuencias de declaración.</CardDescription>
-            </CardHeader>
-            <CardContent className="p-0">
-              {displayingClients.length > 0 ? (
-                <div className="divide-y">
-                  {displayingClients.map((client) => (
-                    <Link
-                      key={client.id}
-                      href={`/dashboard/clients/${client.id}`}
-                      className="flex flex-col sm:flex-row sm:items-center justify-between p-6 hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground font-medium">
-                          {(client.commercial_name || client.legal_name || 'C')[0].toUpperCase()}
-                        </div>
-                        <div className="space-y-1">
-                          <p className="font-medium text-sm">
-                            {client.commercial_name || client.legal_name}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            NIT: {client.nit}
-                          </p>
-                        </div>
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+            <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800">
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Directorio de Contribuyentes</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Control de regímenes y frecuencias de declaración.</p>
+            </div>
+            {displayingClients.length > 0 ? (
+              <div className="divide-y divide-slate-100 dark:divide-slate-800">
+                {displayingClients.map((client) => (
+                  <Link key={client.id} href={`/dashboard/clients/${client.id}`}
+                    className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-3.5 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+                    <div className="flex items-center gap-3">
+                      <div className="h-9 w-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 font-medium text-sm">
+                        {(client.commercial_name || client.legal_name || 'C')[0].toUpperCase()}
                       </div>
-                      <div className="mt-4 sm:mt-0 flex items-center gap-4">
-                        {client.fiscal_data ? (
-                          <div className="text-right">
-                            <div className="text-sm font-medium">{client.fiscal_data.tax_regime || 'Sin régimen'}</div>
-                            <div className="text-xs text-muted-foreground flex items-center justify-end gap-1">
-                              <Calendar className="h-3 w-3" />
-                              {client.fiscal_data.declaration_frequency === 'monthly' ? 'Mensual' : client.fiscal_data.declaration_frequency === 'quarterly' ? 'Trimestral' : 'N/D'}
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-xs px-2 py-1 rounded-full bg-amber-50 text-amber-600 font-medium">
-                            Pendiente
-                          </div>
-                        )}
-                        <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <p className="font-medium text-sm text-slate-900 dark:text-white">{client.commercial_name || client.legal_name}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">NIT: {client.nit}</p>
                       </div>
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground">
-                  <Receipt className="h-10 w-10 mb-2 opacity-20" />
-                  <p>No se encontraron resultados.</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                    </div>
+                    <div className="mt-2 sm:mt-0 flex items-center gap-3">
+                      {client.fiscal_data ? (
+                        <div className="text-right">
+                          <p className="text-sm font-medium text-slate-900 dark:text-white">{client.fiscal_data.tax_regime || 'Sin régimen'}</p>
+                          <p className="text-xs text-slate-500 flex items-center justify-end gap-1">
+                            <Calendar className="h-3 w-3" />
+                            {client.fiscal_data.declaration_frequency === 'monthly' ? 'Mensual' : client.fiscal_data.declaration_frequency === 'quarterly' ? 'Trimestral' : 'N/D'}
+                          </p>
+                        </div>
+                      ) : (
+                        <span className="text-[11px] px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-400 font-medium">Pendiente</span>
+                      )}
+                      <ArrowRight className="h-4 w-4 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-16 text-center">
+                <Receipt className="h-8 w-8 text-slate-300 mb-3" />
+                <p className="text-sm text-slate-500">No se encontraron resultados.</p>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Sidebar: Status Summary */}
-        <div className="space-y-6">
-          <Card className="border shadow-sm">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">Resumen de Estado</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+        <div>
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+            <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-800">
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Resumen de Estado</h2>
+            </div>
+            <div className="p-5 space-y-4">
               <div>
-                <div className="flex items-center justify-between text-sm mb-2">
-                  <span className="text-muted-foreground">Completo</span>
-                  <span className="font-bold">{clientsWithFiscal.length}</span>
+                <div className="flex items-center justify-between text-sm mb-1.5">
+                  <span className="text-slate-500">Completo</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{clientsWithFiscal.length}</span>
                 </div>
-                <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-                  <div className="h-full bg-emerald-500" style={{ width: `${(clientsWithFiscal.length / (displayingClients?.length || 1)) * 100}%` }} />
+                <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${completePct}%` }} />
                 </div>
               </div>
               <div>
-                <div className="flex items-center justify-between text-sm mb-2">
-                  <span className="text-muted-foreground">Pendiente</span>
-                  <span className="font-bold">{clientsWithoutFiscal.length}</span>
+                <div className="flex items-center justify-between text-sm mb-1.5">
+                  <span className="text-slate-500">Pendiente</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{clientsWithoutFiscal.length}</span>
                 </div>
-                <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-                  <div className="h-full bg-amber-500" style={{ width: `${(clientsWithoutFiscal.length / (displayingClients?.length || 1)) * 100}%` }} />
+                <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-amber-500 rounded-full" style={{ width: `${100 - completePct}%` }} />
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   )
 }
-
-

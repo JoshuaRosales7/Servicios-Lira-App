@@ -2,25 +2,10 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
-  Edit,
-  ArrowLeft,
-  Building2,
-  User,
-  Mail,
-  Phone,
-  MapPin,
-  Receipt,
-  Scale,
-  Landmark,
-  FileText,
-  StickyNote,
-  Calendar,
-  Contact,
-  Fingerprint,
-  Activity
+  Edit, ArrowLeft, Building2, User, Mail, Phone, MapPin, Receipt, Scale, Landmark,
+  FileText, StickyNote, Calendar, Fingerprint, Activity
 } from 'lucide-react'
 import { FiscalDataForm } from '@/components/dashboard/fiscal-data-form'
 import { LegalDataForm } from '@/components/dashboard/legal-data-form'
@@ -34,41 +19,20 @@ import { getClientActivityLogs } from '@/app/actions/system'
 import { ClientTimeline } from '@/components/dashboard/client-timeline'
 import { cn } from '@/lib/utils'
 
-export default async function ClientDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
+export default async function ClientDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createClient()
 
-  const { data: client } = await supabase
-    .from('clients')
-    .select('*')
-    .eq('id', id)
-    .single()
-
-  if (!client) {
-    notFound()
-  }
+  const { data: client } = await supabase.from('clients').select('*').eq('id', id).single()
+  if (!client) notFound()
 
   const { data: { user: currentUser } } = await supabase.auth.getUser()
-  const { data: currentProfile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', currentUser?.id)
-    .single()
-
+  const { data: currentProfile } = await supabase.from('profiles').select('role').eq('id', currentUser?.id).single()
   const isAdmin = currentProfile?.role === 'admin'
 
   const [
-    { data: fiscalData },
-    { data: legalData },
-    { data: bankingData },
-    { data: accountingData },
-    documentCounts,
-    { data: notes },
-    logs
+    { data: fiscalData }, { data: legalData }, { data: bankingData },
+    { data: accountingData }, documentCounts, { data: notes }, logs
   ] = await Promise.all([
     supabase.from('fiscal_data').select('*').eq('client_id', id).maybeSingle(),
     supabase.from('legal_data').select('*').eq('client_id', id).maybeSingle(),
@@ -76,257 +40,237 @@ export default async function ClientDetailPage({
     supabase.from('accounting_data').select('*').eq('client_id', id).maybeSingle(),
     getDocumentCounts(id),
     supabase.from('notes').select('*').eq('client_id', id).order('created_at', { ascending: false }),
-    getClientActivityLogs(id, 20), // Fetch 20 recent logs
+    getClientActivityLogs(id, 20),
   ])
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-700">
-      {/* Professional Header */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {/* Header */}
+      <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
+        <div className="flex items-center gap-3">
           <Link href="/dashboard/clients">
-            <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground hover:text-foreground">
+            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg">
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
+          <div className="h-5 w-px bg-slate-200 dark:bg-slate-800" />
           <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-semibold tracking-tight text-foreground">{client.commercial_name || client.legal_name}</h1>
-              <span className={cn(
-                "px-2.5 py-0.5 rounded-full text-[10px] font-medium tracking-wide border",
-                client.fiscal_status === 'active'
-                  ? "bg-emerald-50/50 text-emerald-600 border-emerald-200 dark:bg-emerald-950/30 dark:border-emerald-800/50 dark:text-emerald-400"
-                  : "bg-amber-50/50 text-amber-600 border-amber-200 dark:bg-amber-950/30 dark:border-amber-800/50 dark:text-amber-400"
-              )}>
-                {client.fiscal_status === 'active' ? 'ACTIVO' : 'INACTIVO'}
+            <h1 className="text-xl font-semibold text-slate-900 dark:text-white">{client.commercial_name || client.legal_name}</h1>
+            <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+              <span className="inline-flex items-center gap-1">
+                {client.person_type === 'juridica' ? <Building2 className="h-3 w-3" /> : <User className="h-3 w-3" />}
+                {client.person_type === 'juridica' ? 'Jurídica' : 'Individual'}
               </span>
-            </div>
-            <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1.5">
-                {client.person_type === 'juridica' ? <Building2 className="h-3.5 w-3.5" /> : <User className="h-3.5 w-3.5" />}
-                {client.person_type === 'juridica' ? 'Persona Jurídica' : 'Persona Individual'}
-              </span>
-              <span className="text-border">|</span>
-              <span className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded">NIT: {client.nit}</span>
+              <span>·</span>
+              <span className="font-mono">NIT: {client.nit}</span>
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        {isAdmin && (
           <Link href={`/dashboard/clients/${id}/edit`}>
-            <Button variant="outline" size="sm" className="h-8">
-              <Edit className="h-3.5 w-3.5 mr-2 text-muted-foreground" />
-              Editar Perfil
-            </Button>
+            <Button size="sm" className="h-8 rounded-lg text-xs"><Edit className="h-3.5 w-3.5 mr-1.5" />Editar</Button>
           </Link>
-        </div>
+        )}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-12 items-start">
-        {/* Left Column: Profile & Stats */}
-        <div className="lg:col-span-4 xl:col-span-3 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Sidebar */}
+        <div className="lg:col-span-1 space-y-4">
           {/* Profile Card */}
-          <Card className="border-border/60 shadow-sm overflow-hidden bg-card">
-            <CardHeader className="p-0">
-              <div className="h-24 bg-gradient-to-b from-muted to-background border-b border-border/50"></div>
-            </CardHeader>
-            <CardContent className="px-6 pb-6 -mt-12 relative">
-              <div className="h-24 w-24 rounded-2xl bg-card border-2 border-background shadow-md flex items-center justify-center mb-4">
-                {client.person_type === 'juridica' ? (
-                  <Building2 className="h-10 w-10 text-primary/80" />
-                ) : (
-                  <User className="h-10 w-10 text-primary/80" />
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+            <div className="h-20 bg-slate-100 dark:bg-slate-800 relative">
+              <div className="absolute -bottom-8 left-5">
+                <div className="h-16 w-16 rounded-xl bg-white dark:bg-slate-900 border-2 border-white dark:border-slate-900 shadow flex items-center justify-center">
+                  {client.person_type === 'juridica' ? (
+                    <Building2 className="h-7 w-7 text-slate-400" />
+                  ) : (
+                    <User className="h-7 w-7 text-slate-400" />
+                  )}
+                </div>
+              </div>
+              <div className="absolute top-3 right-3">
+                <span className={cn(
+                  "text-[10px] px-2 py-0.5 rounded-md font-semibold",
+                  client.fiscal_status === 'active'
+                    ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400"
+                    : "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400"
+                )}>
+                  {client.fiscal_status === 'active' ? 'Activo' : 'Inactivo'}
+                </span>
+              </div>
+            </div>
+
+            <div className="px-5 pt-12 pb-5 space-y-4">
+              <div className="space-y-2.5">
+                {client.email && (
+                  <div className="flex items-center gap-2.5 text-sm">
+                    <Mail className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                    <a href={`mailto:${client.email}`} className="text-slate-600 dark:text-slate-400 hover:text-blue-600 truncate">{client.email}</a>
+                  </div>
+                )}
+                {client.phone && (
+                  <div className="flex items-center gap-2.5 text-sm">
+                    <Phone className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                    <span className="text-slate-600 dark:text-slate-400">{client.phone}</span>
+                  </div>
+                )}
+                {(client.municipality || client.department) && (
+                  <div className="flex items-center gap-2.5 text-sm">
+                    <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                    <span className="text-slate-600 dark:text-slate-400">{[client.municipality, client.department].filter(Boolean).join(', ')}</span>
+                  </div>
                 )}
               </div>
 
-              <div className="mb-6">
-                <h3 className="font-bold text-xl leading-tight">{client.commercial_name || client.legal_name}</h3>
-                <div className="flex items-center gap-2 mt-2">
-                  <span className={cn(
-                    "px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border",
-                    client.fiscal_status === 'active'
-                      ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
-                      : "bg-amber-500/10 text-amber-600 border-amber-500/20"
-                  )}>
-                    {client.fiscal_status === 'active' ? 'Activo' : 'Inactivo'}
-                  </span>
+              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-3">
+                <div>
+                  <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-0.5">DPI</p>
+                  <p className="font-mono text-xs text-slate-700 dark:text-slate-300">{client.dpi || 'N/A'}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-0.5">Registrado</p>
+                  <p className="text-xs text-slate-700 dark:text-slate-300">
+                    {new Date(client.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  </p>
                 </div>
               </div>
+            </div>
+          </div>
 
-              <div className="space-y-5">
-                <div className="space-y-1">
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Contacto</p>
-                  {client.email && (
-                    <div className="flex items-center gap-3 py-1">
-                      <Mail className="h-4 w-4 text-muted-foreground" />
-                      <a href={`mailto:${client.email}`} className="text-sm hover:underline truncate text-foreground/90">{client.email}</a>
-                    </div>
-                  )}
-                  {client.phone && (
-                    <div className="flex items-center gap-3 py-1">
-                      <Phone className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm text-foreground/90">{client.phone}</span>
-                    </div>
-                  )}
-                </div>
+          {/* Quick Stats */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-slate-50/80 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 p-4">
+              <FileText className="h-4 w-4 text-blue-500 mb-2" />
+              <p className="text-xl font-bold text-slate-900 dark:text-white">{Object.values(documentCounts).reduce((a: any, b: any) => a + b, 0)}</p>
+              <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-0.5">Archivos</p>
+            </div>
+            <div className="bg-slate-50/80 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 p-4">
+              <StickyNote className="h-4 w-4 text-amber-500 mb-2" />
+              <p className="text-xl font-bold text-slate-900 dark:text-white">{notes?.length || 0}</p>
+              <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-0.5">Notas</p>
+            </div>
+          </div>
 
-                {(client.fiscal_address || client.municipality || client.department) && (
-                  <div className="space-y-1">
-                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Ubicación</p>
-                    <div className="flex items-start gap-3 py-1">
-                      <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
-                      <div className="text-sm text-foreground/90 leading-snug">
-                        {client.fiscal_address}
-                        <div className="opacity-70 text-xs mt-0.5">
-                          {[client.municipality, client.department].filter(Boolean).join(', ')}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="pt-5 border-t border-border/50 grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">DPI</p>
-                    <p className="text-xs font-mono bg-muted/50 px-2 py-1 rounded border border-border/50 inline-block">{client.dpi || 'N/A'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Registro</p>
-                    <p className="text-xs font-mono bg-muted/50 px-2 py-1 rounded border border-border/50 inline-block">{new Date(client.created_at).toLocaleDateString()}</p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Key Indicators (Stacked in Sidebar) */}
-          <div className="grid grid-cols-1 gap-3">
-            <Card className="border shadow-none bg-blue-50/30 border-blue-100 dark:bg-blue-900/10 dark:border-blue-900/30">
-              <CardContent className="p-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-100 rounded-lg dark:bg-blue-900/40 text-blue-600 dark:text-blue-400">
-                    <FileText className="h-4 w-4" />
-                  </div>
-                  <span className="text-sm font-medium text-foreground/80">Expedientes</span>
-                </div>
-                <span className="text-xl font-bold">{Object.values(documentCounts).reduce((a: any, b: any) => a + b, 0)}</span>
-              </CardContent>
-            </Card>
-            <Card className="border shadow-none bg-amber-50/30 border-amber-100 dark:bg-amber-900/10 dark:border-amber-900/30">
-              <CardContent className="p-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-amber-100 rounded-lg dark:bg-amber-900/40 text-amber-600 dark:text-amber-400">
-                    <StickyNote className="h-4 w-4" />
-                  </div>
-                  <span className="text-sm font-medium text-foreground/80">Notas</span>
-                </div>
-                <span className="text-xl font-bold">{notes?.length || 0}</span>
-              </CardContent>
-            </Card>
+          <div className="bg-slate-50/80 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 p-4 flex items-center gap-3">
+            <Activity className="h-4 w-4 text-emerald-500 shrink-0" />
+            <div>
+              <p className="text-xs font-medium text-slate-900 dark:text-white">{logs?.length || 0} eventos</p>
+              <p className="text-[10px] text-slate-500">registrados</p>
+            </div>
           </div>
         </div>
 
-        {/* Main Content Sections */}
-        <div className="lg:col-span-8 xl:col-span-9 space-y-6">
+        {/* Main Content */}
+        <div className="lg:col-span-3 space-y-6">
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+            <Tabs defaultValue="timeline" className="w-full">
+              <div className="border-b border-slate-100 dark:border-slate-800 px-6 overflow-x-auto bg-slate-50/50 dark:bg-slate-900/20">
+                <TabsList className="bg-transparent h-12 w-full justify-start gap-6 p-0">
+                  {[
+                    { value: 'timeline', label: 'Historia', icon: Activity, always: true },
+                    { value: 'notes', label: 'Notas', icon: StickyNote, always: true },
+                    { value: 'fiscal', label: 'Fiscal', icon: Receipt, adminOnly: true },
+                    { value: 'legal', label: 'Legal', icon: Scale, adminOnly: true },
+                    { value: 'banking', label: 'Banca', icon: Landmark, adminOnly: true },
+                    { value: 'accounting', label: 'Contabilidad', icon: Receipt, adminOnly: true },
+                    { value: 'admin', label: 'Admin', icon: Fingerprint, adminOnly: true }
+                  ].map((tab) => {
+                    const isAvailable = tab.always || (tab.adminOnly && isAdmin)
+                    return (
+                      <TabsTrigger key={tab.value} value={tab.value} disabled={!isAvailable}
+                        className={cn(
+                          "h-12 rounded-none border-b-2 border-transparent bg-transparent px-0 text-sm font-medium text-slate-500 shadow-none data-[state=active]:border-blue-600 data-[state=active]:text-slate-900 dark:data-[state=active]:text-white whitespace-nowrap",
+                          !isAvailable && "opacity-40 cursor-not-allowed"
+                        )}>
+                        <div className="flex items-center gap-1.5">
+                          <tab.icon className="h-3.5 w-3.5" />
+                          <span>{tab.label}</span>
+                        </div>
+                      </TabsTrigger>
+                    )
+                  })}
+                </TabsList>
+              </div>
 
-          <Tabs defaultValue="timeline" className="w-full">
-            <div className="sticky top-[4.5rem] z-30 bg-background/95 backdrop-blur-sm pb-4 pt-1 border-b mb-6">
-              <TabsList className="bg-transparent h-auto w-full justify-start gap-6 p-0">
-                {[
-                  { value: 'timeline', label: 'Historia', icon: Activity },
-                  { value: 'fiscal', label: 'Fiscal', icon: Receipt },
-                  { value: 'legal', label: 'Legal', icon: Scale },
-                  { value: 'banking', label: 'Banca', icon: Landmark },
-                  { value: 'accounting', label: 'Contabilidad', icon: Receipt },
-                  { value: 'notes', label: 'Notas', icon: StickyNote },
-                  ...(isAdmin ? [{ value: 'admin', label: 'Admin', icon: Fingerprint }] : [])
-                ].map((tab) => (
-                  <TabsTrigger
-                    key={tab.value}
-                    value={tab.value}
-                    className="relative h-9 rounded-none border-b-2 border-transparent bg-transparent px-2 pb-3 pt-2 font-medium text-muted-foreground shadow-none transition-none data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none hover:text-foreground"
-                  >
-                    <div className="flex items-center gap-2">
-                      <tab.icon className="h-4 w-4" />
-                      <span>{tab.label}</span>
-                    </div>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </div>
-
-            <div className="min-h-[400px] animate-in slide-in-from-bottom-2 fade-in duration-500">
-              <TabsContent value="timeline" className="mt-0 outline-none">
-                <div className="rounded-xl border bg-card text-card-foreground shadow-sm min-h-[750px]">
-                  <div className="p-6">
-                    <h3 className="text-lg font-semibold mb-1">Actividad Reciente</h3>
-                    <p className="text-sm text-muted-foreground mb-6">Registro cronológico de movimientos y cambios.</p>
-                    <ClientTimeline logs={logs as any[]} />
+              <div className="p-6 h-[600px] overflow-y-auto">
+                <TabsContent value="timeline" className="mt-0 space-y-4">
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-0.5">Actividad Reciente</h3>
+                    <p className="text-xs text-slate-500">Registro cronológico de movimientos.</p>
                   </div>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="fiscal" className="mt-0 outline-none">
-                <div className="rounded-xl border bg-card text-card-foreground shadow-sm min-h-[750px] p-6">
-                  <FiscalDataForm clientId={id} fiscalData={fiscalData} />
-                </div>
-              </TabsContent>
-
-              <TabsContent value="legal" className="mt-0 outline-none">
-                <div className="rounded-xl border bg-card text-card-foreground shadow-sm min-h-[750px] p-6">
-                  <LegalDataForm clientId={id} legalData={legalData} />
-                </div>
-              </TabsContent>
-
-              <TabsContent value="banking" className="mt-0 outline-none">
-                <div className="rounded-xl border bg-card text-card-foreground shadow-sm min-h-[750px] p-6">
-                  <BankingDataSection clientId={id} bankingData={bankingData || []} />
-                </div>
-              </TabsContent>
-
-              <TabsContent value="accounting" className="mt-0 outline-none">
-                <div className="rounded-xl border bg-card text-card-foreground shadow-sm min-h-[750px] p-6">
-                  <AccountingDataForm clientId={id} accountingData={accountingData} />
-                </div>
-              </TabsContent>
-
-              <TabsContent value="notes" className="mt-0 outline-none">
-                <div className="rounded-xl border bg-card text-card-foreground shadow-sm min-h-[750px] p-6">
-                  <NotesSection clientId={id} notes={notes || []} />
-                </div>
-              </TabsContent>
-
-              {isAdmin && (
-                <TabsContent value="admin" className="mt-0 outline-none">
-                  <div className="rounded-xl border bg-card text-card-foreground shadow-sm min-h-[750px] p-6">
-                    <ClientAdminTools
-                      clientId={client.id}
-                      clientEmail={client.email || ''}
-                      clientNit={client.nit}
-                      userId={client.user_id || null}
-                    />
-                  </div>
+                  <ClientTimeline logs={logs as any[]} />
                 </TabsContent>
-              )}
-            </div>
-          </Tabs>
+
+                <TabsContent value="notes" className="mt-0 space-y-4">
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-0.5">Notas Internas</h3>
+                    <p className="text-xs text-slate-500">Observaciones y seguimiento.</p>
+                  </div>
+                  <NotesSection clientId={id} notes={notes || []} />
+                </TabsContent>
+
+                {isAdmin && (
+                  <>
+                    <TabsContent value="fiscal" className="mt-0 space-y-4">
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-0.5">Información Fiscal</h3>
+                        <p className="text-xs text-slate-500">Datos SAT y obligaciones tributarias.</p>
+                      </div>
+                      <FiscalDataForm clientId={id} fiscalData={fiscalData} />
+                    </TabsContent>
+
+                    <TabsContent value="legal" className="mt-0 space-y-4">
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-0.5">Información Legal</h3>
+                        <p className="text-xs text-slate-500">Constitución y representaciones legales.</p>
+                      </div>
+                      <LegalDataForm clientId={id} legalData={legalData} />
+                    </TabsContent>
+
+                    <TabsContent value="banking" className="mt-0 space-y-4">
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-0.5">Información Bancaria</h3>
+                        <p className="text-xs text-slate-500">Cuentas e integraciones financieras.</p>
+                      </div>
+                      <BankingDataSection clientId={id} bankingData={bankingData || []} />
+                    </TabsContent>
+
+                    <TabsContent value="accounting" className="mt-0 space-y-4">
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-0.5">Información Contable</h3>
+                        <p className="text-xs text-slate-500">Sistemas de costeo y plataformas contables.</p>
+                      </div>
+                      <AccountingDataForm clientId={id} accountingData={accountingData} />
+                    </TabsContent>
+
+                    <TabsContent value="admin" className="mt-0 space-y-4">
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-0.5">Administración</h3>
+                        <p className="text-xs text-slate-500">Usuario, facturación y configuración.</p>
+                      </div>
+                      <ClientAdminTools clientId={client.id} clientEmail={client.email || ''} clientNit={client.nit} userId={client.user_id || null} />
+                    </TabsContent>
+                  </>
+                )}
+              </div>
+            </Tabs>
+          </div>
 
         </div>
       </div>
 
-      {/* Documents Section - Full Width of Content */}
-      <div className="pt-4 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
-        <div className="flex items-center justify-between gap-4 mb-6 pt-6 border-t">
-          <div className="space-y-1">
-            <h2 className="text-xl font-semibold tracking-tight">Gestión Documental</h2>
-            <p className="text-sm text-muted-foreground">Repositorio centralizado de expedientes y archivos fiscales.</p>
+      {/* Documents — full width below */}
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center gap-3 bg-slate-50/50 dark:bg-slate-900/20">
+          <FileText className="h-4 w-4 text-slate-400" />
+          <div>
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Expediente Central</h3>
+            <p className="text-xs text-slate-500 mt-0.5">Archivos y documentos oficiales del cliente</p>
           </div>
         </div>
-
-        <Card className="border-border/50 shadow-sm bg-card/50">
-          <CardContent className="p-0">
-            <DocumentsSection clientId={id} initialCounts={documentCounts} />
-          </CardContent>
-        </Card>
+        <div className="p-6">
+          <DocumentsSection clientId={id} initialCounts={documentCounts} />
+        </div>
       </div>
     </div>
   )

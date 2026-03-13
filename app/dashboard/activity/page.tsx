@@ -23,30 +23,30 @@ export default async function ActivityPage(props: ActivityPageProps) {
         .eq('id', user.id)
         .single()
 
-    // Only admins should see this page
-    if (profile?.role !== 'admin') {
-        redirect('/dashboard')
-    }
+    if (profile?.role !== 'admin') redirect('/dashboard')
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
-            <div className="flex items-center gap-4 border-b pb-6">
-                <div className="h-12 w-12 rounded-lg bg-indigo-500/10 flex items-center justify-center">
-                    <Activity className="h-6 w-6 text-indigo-500" />
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            {/* Header */}
+            <div className="flex items-center gap-3 pb-4 border-b border-slate-200 dark:border-slate-800">
+                <div className="p-2 bg-violet-50 dark:bg-violet-950 rounded-lg">
+                    <Activity className="h-5 w-5 text-violet-600 dark:text-violet-400" />
                 </div>
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Registro de Actividad</h1>
-                    <p className="text-sm text-muted-foreground">
-                        Historial completo de eventos y auditoría del sistema.
-                    </p>
+                    <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Registro de Actividad</h1>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">Historial de eventos y auditoría del sistema.</p>
                 </div>
             </div>
 
-            <ActivityFilters />
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4">
+                <ActivityFilters />
+            </div>
 
-            <Suspense fallback={<ActivityListSkeleton />} key={JSON.stringify(searchParams)}>
-                <ActivityList searchParams={searchParams} />
-            </Suspense>
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+                <Suspense fallback={<ActivityListSkeleton />} key={JSON.stringify(searchParams)}>
+                    <ActivityList searchParams={searchParams} />
+                </Suspense>
+            </div>
         </div>
     )
 }

@@ -121,22 +121,19 @@ export function ClientForm({ client }: ClientFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-8">
       {error && (
-        <div className="flex items-center gap-2 rounded-lg bg-destructive/10 p-4 text-sm text-destructive">
+        <div className="flex items-center gap-2 rounded-lg bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-900 p-3 text-sm text-red-700 dark:text-red-400">
           <AlertCircle className="h-4 w-4 flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Información Básica</CardTitle>
-          <CardDescription>
-            Introduce la información básica de contacto del cliente
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      {/* Información Básica */}
+      <div>
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">Información Básica</h3>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">Datos de identificación y contacto del cliente</p>
+        <div className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="legal_name">Nombre Legal / Razón Social *</Label>
@@ -238,17 +235,16 @@ export function ClientForm({ client }: ClientFormProps) {
           </div>
 
 
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Dirección</CardTitle>
-          <CardDescription>
-            Información de dirección física del cliente
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      <div className="h-px bg-slate-200 dark:bg-slate-800" />
+
+      {/* Dirección */}
+      <div>
+        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">Dirección</h3>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">Información de dirección física del cliente</p>
+        <div className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="fiscal_address">Dirección Fiscal</Label>
             <Textarea
@@ -280,21 +276,20 @@ export function ClientForm({ client }: ClientFormProps) {
               />
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {!client && (
-        <Card className="border-primary/20 bg-primary/[0.02]">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-primary">
-              <ShieldCheck className="h-5 w-5" />
-              Acceso al Sistema
-            </CardTitle>
-            <CardDescription>
-              Permite que el cliente acceda a su propio panel de control
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
+        <>
+        <div className="h-px bg-slate-200 dark:bg-slate-800" />
+
+        <div>
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1 flex items-center gap-2">
+            <ShieldCheck className="h-4 w-4 text-blue-600" />
+            Acceso al Sistema
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">Permite que el cliente acceda a su panel</p>
+          <div className="space-y-4">
             <div className="flex items-center space-x-3 p-4 rounded-xl bg-background border border-border/40">
               <Checkbox
                 id="create_access"
@@ -345,28 +340,25 @@ export function ClientForm({ client }: ClientFormProps) {
                 </p>
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
+        </>
       )}
 
-      <div className="flex items-center justify-between">
+      <div className="h-px bg-slate-200 dark:bg-slate-800" />
+
+      <div className="flex items-center justify-between pt-2">
         <Link href="/dashboard/clients">
-          <Button type="button" variant="outline">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Volver a Clientes
+          <Button type="button" variant="ghost" size="sm" className="h-9 rounded-lg text-xs">
+            <ArrowLeft className="mr-1.5 h-3.5 w-3.5" />
+            Cancelar
           </Button>
         </Link>
-        <Button type="submit" disabled={isLoading}>
+        <Button type="submit" disabled={isLoading} size="sm" className="h-9 rounded-lg">
           {isLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Guardando...
-            </>
+            <><Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />Guardando...</>
           ) : (
-            <>
-              <Save className="mr-2 h-4 w-4" />
-              {client ? 'Actualizar Cliente' : 'Crear Cliente'}
-            </>
+            <><Save className="mr-1.5 h-3.5 w-3.5" />{client ? 'Guardar Cambios' : 'Crear Cliente'}</>
           )}
         </Button>
       </div>
