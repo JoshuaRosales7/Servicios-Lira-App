@@ -29,7 +29,7 @@ export default async function ClientsPage({
   const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
 
   if (profile?.role === 'client') {
-    const { data: clientRecord } = await supabase.from('clients').select('id').eq('user_id', user.id).single()
+    const { data: clientRecord } = await supabase.from('clients').select('id').eq('user_id', user.id).maybeSingle()
     if (clientRecord) redirect(`/dashboard/clients/${clientRecord.id}`)
     else redirect('/dashboard')
   }

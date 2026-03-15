@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Edit, ArrowLeft, Building2, User, Mail, Phone, MapPin, Receipt, Scale, Landmark,
-  FileText, StickyNote, Calendar, Fingerprint, Activity
+  FileText, StickyNote, Calendar, Fingerprint, Activity, AlertCircle
 } from 'lucide-react'
 import { FiscalDataForm } from '@/components/dashboard/fiscal-data-form'
 import { LegalDataForm } from '@/components/dashboard/legal-data-form'
@@ -14,6 +14,7 @@ import { AccountingDataForm } from '@/components/dashboard/accounting-data-form'
 import { DocumentsSection } from '@/components/dashboard/documents-section'
 import { NotesSection } from '@/components/dashboard/notes-section'
 import { ClientAdminTools } from '@/components/dashboard/client-admin-tools'
+import { RealtimePresence } from '@/components/dashboard/realtime-presence'
 import { getDocumentCounts } from '@/app/actions/documents'
 import { getClientActivityLogs } from '@/app/actions/system'
 import { ClientTimeline } from '@/components/dashboard/client-timeline'
@@ -27,8 +28,11 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
   if (!client) notFound()
 
   const { data: { user: currentUser } } = await supabase.auth.getUser()
-  const { data: currentProfile } = await supabase.from('profiles').select('role').eq('id', currentUser?.id).single()
+  const { data: currentProfile } = await supabase.from('profiles').select('role, full_name').eq('id', currentUser?.id).single()
+  
   const isAdmin = currentProfile?.role === 'admin'
+  const isOwner = currentUser?.id === client.user_id
+  const canAccessFullDetail = isAdmin || isOwner
 
   const [
     { data: fiscalData }, { data: legalData }, { data: bankingData },
@@ -42,6 +46,15 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
     supabase.from('notes').select('*').eq('client_id', id).order('created_at', { ascending: false }),
     getClientActivityLogs(id, 20),
   ])
+
+  const missingSections = [
+    { label: 'Historia', status: logs && logs.length > 0 },
+    { label: 'Fiscal', status: !!fiscalData },
+    { label: 'Legal', status: !!legalData },
+    { label: 'Contabilidad', status: !!accountingData },
+  ].filter(s => !s.status).map(s => s.label)
+
+  const isProfileIncomplete = missingSections.length > 0
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -66,12 +79,37 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
             </div>
           </div>
         </div>
-        {isAdmin && (
-          <Link href={`/dashboard/clients/${id}/edit`}>
-            <Button size="sm" className="h-8 rounded-lg text-xs"><Edit className="h-3.5 w-3.5 mr-1.5" />Editar</Button>
-          </Link>
-        )}
+        <div className="flex items-center gap-4">
+          <RealtimePresence roomId={`client-${id}`} userId={currentUser?.id || ''} userName={currentProfile?.full_name || currentUser?.email || 'User'} />
+          {canAccessFullDetail && (
+            <Link href={`/dashboard/clients/${id}/edit`}>
+              <Button size="sm" className="h-8 rounded-lg text-xs"><Edit className="h-3.5 w-3.5 mr-1.5" />Editar</Button>
+            </Link>
+          )}
+        </div>
       </div>
+
+      {isProfileIncomplete && (
+        <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-in slide-in-from-top-2 duration-500">
+          <div className="flex items-start gap-3">
+            <div className="p-2 bg-amber-100 dark:bg-amber-900/50 rounded-lg shrink-0">
+              <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-amber-900 dark:text-amber-100">Expediente Incompleto</h3>
+              <p className="text-xs text-amber-700 dark:text-amber-400 mt-0.5 leading-relaxed">
+                Aún no has completado toda la información de tu cuenta. Faltan completar los siguientes campos de tu historia: 
+                <span className="font-bold ml-1">{missingSections.join(', ')}</span>.
+              </p>
+            </div>
+          </div>
+          <Link href={`/dashboard/clients/${id}/edit`} className="shrink-0">
+            <Button size="sm" variant="outline" className="h-8 rounded-lg text-xs bg-white dark:bg-slate-900 border-amber-200 dark:border-amber-900 hover:bg-amber-50 dark:hover:bg-amber-950 text-amber-700 dark:text-amber-300">
+              Actualizar Datos
+            </Button>
+          </Link>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Sidebar */}
@@ -169,22 +207,26 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                   {[
                     { value: 'timeline', label: 'Historia', icon: Activity, always: true },
                     { value: 'notes', label: 'Notas', icon: StickyNote, always: true },
-                    { value: 'fiscal', label: 'Fiscal', icon: Receipt, adminOnly: true },
-                    { value: 'legal', label: 'Legal', icon: Scale, adminOnly: true },
-                    { value: 'banking', label: 'Banca', icon: Landmark, adminOnly: true },
-                    { value: 'accounting', label: 'Contabilidad', icon: Receipt, adminOnly: true },
-                    { value: 'admin', label: 'Admin', icon: Fingerprint, adminOnly: true }
+                    { value: 'fiscal', label: 'Fiscal', icon: Receipt },
+                    { value: 'legal', label: 'Legal', icon: Scale },
+                    { value: 'banking', label: 'Banca', icon: Landmark },
+                    { value: 'accounting', label: 'Contabilidad', icon: Receipt },
+                    { value: 'admin', label: 'Admin', icon: Fingerprint }
                   ].map((tab) => {
-                    const isAvailable = tab.always || (tab.adminOnly && isAdmin)
+                    const isIncomplete = missingSections.includes(tab.label)
+                    const reallyAvailable = tab.always || (tab.value === 'admin' ? isAdmin : canAccessFullDetail)
                     return (
-                      <TabsTrigger key={tab.value} value={tab.value} disabled={!isAvailable}
+                      <TabsTrigger key={tab.value} value={tab.value} disabled={!reallyAvailable}
                         className={cn(
                           "h-12 rounded-none border-b-2 border-transparent bg-transparent px-0 text-sm font-medium text-slate-500 shadow-none data-[state=active]:border-blue-600 data-[state=active]:text-slate-900 dark:data-[state=active]:text-white whitespace-nowrap",
-                          !isAvailable && "opacity-40 cursor-not-allowed"
+                          !reallyAvailable && "opacity-40 cursor-not-allowed hidden md:inline-flex"
                         )}>
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1.5 relative">
                           <tab.icon className="h-3.5 w-3.5" />
                           <span>{tab.label}</span>
+                          {isIncomplete && (
+                            <span className="absolute -top-1 -right-2 h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
+                          )}
                         </div>
                       </TabsTrigger>
                     )
@@ -209,48 +251,54 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                   <NotesSection clientId={id} notes={notes || []} />
                 </TabsContent>
 
+                {canAccessFullDetail && (
+                  <TabsContent value="fiscal" className="mt-0 space-y-4">
+                    <div>
+                      <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-0.5">Información Fiscal</h3>
+                      <p className="text-xs text-slate-500">Datos SAT y obligaciones tributarias.</p>
+                    </div>
+                    <FiscalDataForm clientId={id} fiscalData={fiscalData} />
+                  </TabsContent>
+                )}
+
+                {canAccessFullDetail && (
+                  <TabsContent value="legal" className="mt-0 space-y-4">
+                    <div>
+                      <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-0.5">Información Legal</h3>
+                      <p className="text-xs text-slate-500">Constitución y representaciones legales.</p>
+                    </div>
+                    <LegalDataForm clientId={id} legalData={legalData} />
+                  </TabsContent>
+                )}
+
+                {canAccessFullDetail && (
+                  <TabsContent value="banking" className="mt-0 space-y-4">
+                    <div>
+                      <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-0.5">Información Bancaria</h3>
+                      <p className="text-xs text-slate-500">Cuentas e integraciones financieras.</p>
+                    </div>
+                    <BankingDataSection clientId={id} bankingData={bankingData || []} />
+                  </TabsContent>
+                )}
+
+                {canAccessFullDetail && (
+                  <TabsContent value="accounting" className="mt-0 space-y-4">
+                    <div>
+                      <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-0.5">Información Contable</h3>
+                      <p className="text-xs text-slate-500">Sistemas de costeo y plataformas contables.</p>
+                    </div>
+                    <AccountingDataForm clientId={id} accountingData={accountingData} />
+                  </TabsContent>
+                )}
+
                 {isAdmin && (
-                  <>
-                    <TabsContent value="fiscal" className="mt-0 space-y-4">
-                      <div>
-                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-0.5">Información Fiscal</h3>
-                        <p className="text-xs text-slate-500">Datos SAT y obligaciones tributarias.</p>
-                      </div>
-                      <FiscalDataForm clientId={id} fiscalData={fiscalData} />
-                    </TabsContent>
-
-                    <TabsContent value="legal" className="mt-0 space-y-4">
-                      <div>
-                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-0.5">Información Legal</h3>
-                        <p className="text-xs text-slate-500">Constitución y representaciones legales.</p>
-                      </div>
-                      <LegalDataForm clientId={id} legalData={legalData} />
-                    </TabsContent>
-
-                    <TabsContent value="banking" className="mt-0 space-y-4">
-                      <div>
-                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-0.5">Información Bancaria</h3>
-                        <p className="text-xs text-slate-500">Cuentas e integraciones financieras.</p>
-                      </div>
-                      <BankingDataSection clientId={id} bankingData={bankingData || []} />
-                    </TabsContent>
-
-                    <TabsContent value="accounting" className="mt-0 space-y-4">
-                      <div>
-                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-0.5">Información Contable</h3>
-                        <p className="text-xs text-slate-500">Sistemas de costeo y plataformas contables.</p>
-                      </div>
-                      <AccountingDataForm clientId={id} accountingData={accountingData} />
-                    </TabsContent>
-
-                    <TabsContent value="admin" className="mt-0 space-y-4">
-                      <div>
-                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-0.5">Administración</h3>
-                        <p className="text-xs text-slate-500">Usuario, facturación y configuración.</p>
-                      </div>
-                      <ClientAdminTools clientId={client.id} clientEmail={client.email || ''} clientNit={client.nit} userId={client.user_id || null} />
-                    </TabsContent>
-                  </>
+                  <TabsContent value="admin" className="mt-0 space-y-4">
+                    <div>
+                      <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-0.5">Administración</h3>
+                      <p className="text-xs text-slate-500">Usuario, facturación y configuración.</p>
+                    </div>
+                    <ClientAdminTools clientId={client.id} clientEmail={client.email || ''} clientNit={client.nit} userId={client.user_id || null} />
+                  </TabsContent>
                 )}
               </div>
             </Tabs>

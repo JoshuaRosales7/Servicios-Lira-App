@@ -14,10 +14,16 @@ export default async function EditClientPage({ params }: { params: Promise<{ id:
   if (!user) redirect('/auth/login')
 
   const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
-  if (profile?.role !== 'admin') redirect('/dashboard')
-
+  
   const { data: client } = await supabase.from('clients').select('*').eq('id', id).single()
   if (!client) notFound()
+
+  const isAdmin = profile?.role === 'admin'
+  const isOwner = user.id === client.user_id
+
+  if (!isAdmin && !isOwner) {
+    redirect('/dashboard')
+  }
 
   const infoItems = [
     client.email && { icon: Mail, value: client.email },

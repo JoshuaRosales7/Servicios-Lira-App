@@ -19,7 +19,7 @@ export default async function LegalPage({
 
   const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
   if (profile?.role === 'client') {
-    const { data: clientRecord } = await supabase.from('clients').select('id').eq('user_id', user.id).single()
+    const { data: clientRecord } = await supabase.from('clients').select('id').eq('user_id', user.id).maybeSingle()
     if (clientRecord) redirect(`/dashboard/clients/${clientRecord.id}`)
   }
 
@@ -31,8 +31,13 @@ export default async function LegalPage({
   if (search) query = query.or(`legal_name.ilike.%${search}%,commercial_name.ilike.%${search}%,nit.ilike.%${search}%`)
   if (typeFilter !== 'all') query = query.eq('person_type', typeFilter)
 
-  const { data: clients } = await query.limit(100)
-  let displayingClients = clients || []
+  const { data: rawClients } = await query.limit(100)
+  
+  // Normalize legal_data from array to single object
+  let displayingClients = (rawClients || []).map(client => ({
+    ...client,
+    legal_data: Array.isArray(client.legal_data) ? client.legal_data[0] || null : client.legal_data
+  }))
 
   if (expiringFilter) {
     displayingClients = displayingClients.filter(c => {
@@ -41,9 +46,9 @@ export default async function LegalPage({
     })
   }
 
-  const companies = clients?.filter((c) => c.person_type === 'juridica') || []
-  const individuals = clients?.filter((c) => c.person_type === 'individual') || []
-  const withLegalData = clients?.filter((c) => c.legal_data) || []
+  const companies = displayingClients.filter((c) => c.person_type === 'juridica')
+  const individuals = displayingClients.filter((c) => c.person_type === 'individual')
+  const withLegalData = displayingClients.filter((c) => c.legal_data)
 
   const expiringCount = withLegalData.filter(c => {
     if (!c.legal_data?.documents_expiry) return false

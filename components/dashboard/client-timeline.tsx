@@ -134,29 +134,65 @@ export function ClientTimeline({ logs }: ClientTimelineProps) {
                                 detailsText = log.details.content.substring(0, 50) + (log.details.content.length > 50 ? '...' : '')
                             }
 
+                            const hasChanges = log.details?.previous && log.details?.new
+                            const changes = hasChanges ? Object.keys(log.details.new).filter(key => log.details.new[key] !== log.details.previous[key]) : []
+
                             return (
                                 <div key={log.id} className="relative group">
                                     {/* Connector Line to Item */}
                                     <div className="absolute -left-[27px] top-3.5 h-px w-5 bg-border/60" />
 
-                                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 bg-card border rounded-lg p-3 shadow-sm transition-all hover:shadow-md hover:border-primary/20">
-                                        <div className={cn("h-9 w-9 rounded-md flex items-center justify-center shrink-0", config.color)}>
-                                            <Icon className="h-4.5 w-4.5" />
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center justify-between gap-2 mb-0.5">
-                                                <p className="text-sm font-semibold truncate">{config.label}</p>
-                                                <span className="text-[10px] text-muted-foreground font-mono bg-muted px-1.5 py-0.5 rounded-sm">
-                                                    {time}
-                                                </span>
+                                    <div className="flex flex-col gap-3 bg-card border rounded-lg p-3 shadow-sm transition-all hover:shadow-md hover:border-primary/20">
+                                        <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+                                            <div className={cn("h-9 w-9 mt-0.5 rounded-md flex items-center justify-center shrink-0", config.color)}>
+                                                <Icon className="h-4.5 w-4.5" />
                                             </div>
-                                            <div className="text-xs text-muted-foreground flex flex-col sm:flex-row sm:gap-1.5">
-                                                <span>Por <span className="font-medium text-foreground">{actorName}</span></span>
-                                                {detailsText && (
-                                                    <>
-                                                        <span className="hidden sm:inline">•</span>
-                                                        <span className="truncate italic max-w-[200px]">{detailsText}</span>
-                                                    </>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center justify-between gap-2 mb-0.5">
+                                                    <div className="flex items-center gap-2">
+                                                        <p className="text-sm font-semibold truncate">{config.label}</p>
+                                                        {log.details?.ip_address && (
+                                                            <span className="text-[10px] bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 px-1.5 py-0.5 rounded">
+                                                                IP: {log.details.ip_address}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <span className="text-[10px] text-muted-foreground font-mono bg-muted px-1.5 py-0.5 rounded-sm">
+                                                        {time}
+                                                    </span>
+                                                </div>
+                                                <div className="text-xs text-muted-foreground flex flex-col sm:flex-row sm:gap-1.5">
+                                                    <span>Por <span className="font-medium text-foreground">{actorName}</span></span>
+                                                    {detailsText && (
+                                                        <>
+                                                            <span className="hidden sm:inline">•</span>
+                                                            <span className="truncate italic max-w-[200px]">{detailsText}</span>
+                                                        </>
+                                                    )}
+                                                </div>
+                                                
+                                                {/* Audit Details (if any) */}
+                                                {changes.length > 0 && (
+                                                    <div className="mt-3 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-md overflow-hidden text-xs">
+                                                        <div className="grid grid-cols-3 bg-slate-100/50 dark:bg-slate-800/50 px-3 py-1.5 font-medium text-slate-500 dark:text-slate-400">
+                                                            <div>Campo</div>
+                                                            <div>Anterior</div>
+                                                            <div>Nuevo</div>
+                                                        </div>
+                                                        <div className="divide-y divide-slate-100 dark:divide-slate-800">
+                                                            {changes.map(key => (
+                                                                <div key={key} className="grid grid-cols-3 px-3 py-2">
+                                                                    <div className="font-mono text-slate-600 dark:text-slate-400">{key}</div>
+                                                                    <div className="text-red-600 dark:text-red-400 line-through truncate mr-2" title={String(log.details.previous[key])}>
+                                                                        {log.details.previous[key] || '-'}
+                                                                    </div>
+                                                                    <div className="text-emerald-600 dark:text-emerald-400 font-medium truncate" title={String(log.details.new[key])}>
+                                                                        {log.details.new[key] || '-'}
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
                                                 )}
                                             </div>
                                         </div>

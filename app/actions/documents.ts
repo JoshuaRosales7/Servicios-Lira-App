@@ -13,43 +13,19 @@ export async function getDocumentsByCategory(clientId: string, category: string,
         .select('*')
         .eq('client_id', clientId)
 
-    // For folders, we often group them under 'other' or specific types. 
-    // If we are navigating the structure created by Mass Import (Year/Month), those folders are 'other'.
-    // So if parentId is provided, we just want children in that folder regardless of type (or maybe filtered?)
-    // If parentId is null (Root), we want documents of 'category' OR root folders (which are usually years)
-
     if (parentId) {
-        // Inside a folder, we show everything? Or still filter by category? 
-        // The Mass Import puts files into Month folders. Those files HAVE the category. 
-        // The folders themselves (Year/Month) are 'other'.
-
-        // If we are strictly filtering by 'category', we won't see the 'other' folders that contain our files.
-        // Strategy: 
-        // 1. If looking for files of 'invoice', we need to see the '2025' folder (type=other) 
-        // to traverse into it.
-
-        query = query.eq('parent_id', parentId)
-        // If inside a folder, we likely want to see the files of the requested type, AND any subfolders?
-        // But our structure is Year -> Month -> Files.
-
-        // Simplified Logic: 
-        // Always show all folders? 
-        // Or filter documents by type, but allow ALL folders?
-        query = query.or(`document_type.eq.${category},is_folder.eq.true`)
-
+        // Enforces strict checking: Only show items in this specific parent folder
+        // AND that actually belong to the current category 
+        query = query.eq('parent_id', parentId).eq('document_type', category)
     } else {
-        // Root Level
-        query = query.is('parent_id', null)
-        // Show files of specific category AND all top-level folders?
-        // Or only folders that "might" contain this category?
-        // For now, let's show all root folders to allow navigation.
-        query = query.or(`document_type.eq.${category},is_folder.eq.true`)
+        // Root Level: Enforce strict checking to ONLY show root items (parent_id = null)
+        // AND that actually belong to the current category.
+        query = query.is('parent_id', null).eq('document_type', category)
     }
 
     query = query
         .order('is_folder', { ascending: false })
         .order('created_at', { ascending: false })
-    // Logic handled above
 
 
     const { data, error } = await query

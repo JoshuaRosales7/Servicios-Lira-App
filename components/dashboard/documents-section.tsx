@@ -97,15 +97,87 @@ interface DocumentsSectionProps {
 }
 
 // Folder Configuration
-const FOLDER_CONFIG: Record<string, { label: string, color: string, icon: any }> = {
-  invoice: { label: 'Facturas', color: 'text-blue-500 bg-blue-50', icon: FileText },
-  declaration: { label: 'Declaraciones', color: 'text-purple-500 bg-purple-50', icon: FileText },
-  financial_statement: { label: 'Estados Financieros', color: 'text-emerald-500 bg-emerald-50', icon: FileSpreadsheet },
-  contract: { label: 'Contratos', color: 'text-amber-500 bg-amber-50', icon: FileText },
-  deed: { label: 'Escrituras', color: 'text-indigo-500 bg-indigo-50', icon: FileText },
-  patent: { label: 'Patentes', color: 'text-pink-500 bg-pink-50', icon: FileText },
-  receipt: { label: 'Recibos', color: 'text-cyan-500 bg-cyan-50', icon: FileText },
-  other: { label: 'Otros', color: 'text-gray-500 bg-gray-50', icon: Folder },
+const FOLDER_CONFIG: Record<string, { 
+  label: string, 
+  activeText: string, 
+  activeBorder: string,
+  badgeBg: string, 
+  badgeText: string, 
+  icon: any,
+  cardGradient: string 
+}> = {
+  invoice: { 
+    label: 'Facturas', 
+    activeText: 'text-blue-600 dark:text-blue-400', 
+    activeBorder: 'border-blue-200 dark:border-blue-800',
+    badgeBg: 'bg-blue-100 dark:bg-blue-500/20', 
+    badgeText: 'text-blue-700 dark:text-blue-300', 
+    icon: FileText,
+    cardGradient: 'from-blue-100 to-blue-50 dark:from-blue-900/40 dark:to-blue-900/20 text-blue-600 dark:text-blue-400',
+  },
+  declaration: { 
+    label: 'Declaraciones', 
+    activeText: 'text-purple-600 dark:text-purple-400', 
+    activeBorder: 'border-purple-200 dark:border-purple-800',
+    badgeBg: 'bg-purple-100 dark:bg-purple-500/20', 
+    badgeText: 'text-purple-700 dark:text-purple-300', 
+    icon: FileText,
+    cardGradient: 'from-purple-100 to-purple-50 dark:from-purple-900/40 dark:to-purple-900/20 text-purple-600 dark:text-purple-400',
+  },
+  financial_statement: { 
+    label: 'Estados Financieros', 
+    activeText: 'text-emerald-600 dark:text-emerald-400', 
+    activeBorder: 'border-emerald-200 dark:border-emerald-800',
+    badgeBg: 'bg-emerald-100 dark:bg-emerald-500/20', 
+    badgeText: 'text-emerald-700 dark:text-emerald-300', 
+    icon: FileSpreadsheet,
+    cardGradient: 'from-emerald-100 to-emerald-50 dark:from-emerald-900/40 dark:to-emerald-900/20 text-emerald-600 dark:text-emerald-400',
+  },
+  contract: { 
+    label: 'Contratos', 
+    activeText: 'text-amber-600 dark:text-amber-400', 
+    activeBorder: 'border-amber-200 dark:border-amber-800',
+    badgeBg: 'bg-amber-100 dark:bg-amber-500/20', 
+    badgeText: 'text-amber-700 dark:text-amber-300', 
+    icon: FileText,
+    cardGradient: 'from-amber-100 to-amber-50 dark:from-amber-900/40 dark:to-amber-900/20 text-amber-600 dark:text-amber-400',
+  },
+  deed: { 
+    label: 'Escrituras', 
+    activeText: 'text-indigo-600 dark:text-indigo-400', 
+    activeBorder: 'border-indigo-200 dark:border-indigo-800',
+    badgeBg: 'bg-indigo-100 dark:bg-indigo-500/20', 
+    badgeText: 'text-indigo-700 dark:text-indigo-300', 
+    icon: FileText,
+    cardGradient: 'from-indigo-100 to-indigo-50 dark:from-indigo-900/40 dark:to-indigo-900/20 text-indigo-600 dark:text-indigo-400',
+  },
+  patent: { 
+    label: 'Patentes', 
+    activeText: 'text-rose-600 dark:text-rose-400', 
+    activeBorder: 'border-rose-200 dark:border-rose-800',
+    badgeBg: 'bg-rose-100 dark:bg-rose-500/20', 
+    badgeText: 'text-rose-700 dark:text-rose-300', 
+    icon: FileText,
+    cardGradient: 'from-rose-100 to-rose-50 dark:from-rose-900/40 dark:to-rose-900/20 text-rose-600 dark:text-rose-400',
+  },
+  receipt: { 
+    label: 'Recibos', 
+    activeText: 'text-teal-600 dark:text-teal-400', 
+    activeBorder: 'border-teal-200 dark:border-teal-800',
+    badgeBg: 'bg-teal-100 dark:bg-teal-500/20', 
+    badgeText: 'text-teal-700 dark:text-teal-300', 
+    icon: FileText,
+    cardGradient: 'from-teal-100 to-teal-50 dark:from-teal-900/40 dark:to-teal-900/20 text-teal-600 dark:text-teal-400',
+  },
+  other: { 
+    label: 'Otros', 
+    activeText: 'text-slate-600 dark:text-slate-400', 
+    activeBorder: 'border-slate-200 dark:border-slate-800',
+    badgeBg: 'bg-slate-100 dark:bg-slate-500/20', 
+    badgeText: 'text-slate-700 dark:text-slate-300', 
+    icon: Folder,
+    cardGradient: 'from-slate-100 to-slate-50 dark:from-slate-800/40 dark:to-slate-800/20 text-slate-600 dark:text-slate-400',
+  },
 }
 
 function getFileIcon(fileType: string | null) {
@@ -114,6 +186,14 @@ function getFileIcon(fileType: string | null) {
   if (fileType.includes('sheet') || fileType.includes('excel') || fileType.includes('csv')) return FileSpreadsheet
   if (fileType.includes('image')) return FileImage
   return File
+}
+
+function getFileStyle(fileType: string | null) {
+  if (!fileType) return 'from-stone-100 to-stone-50 dark:from-stone-800/40 dark:to-stone-800/20 text-stone-500 dark:text-stone-400';
+  if (fileType.includes('pdf')) return 'from-red-100 to-red-50 dark:from-red-900/40 dark:to-red-900/20 text-red-500 dark:text-red-400';
+  if (fileType.includes('sheet') || fileType.includes('excel') || fileType.includes('csv')) return 'from-green-100 to-green-50 dark:from-green-900/40 dark:to-green-900/20 text-green-500 dark:text-green-400';
+  if (fileType.includes('image')) return 'from-cyan-100 to-cyan-50 dark:from-cyan-900/40 dark:to-cyan-900/20 text-cyan-500 dark:text-cyan-400';
+  return 'from-stone-100 to-stone-50 dark:from-stone-800/40 dark:to-stone-800/20 text-stone-500 dark:text-stone-400';
 }
 
 function formatFileSize(bytes: number | null): string {
@@ -142,6 +222,7 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
   const [searchQuery, setSearchQuery] = useState('')
   const [yearFilter, setYearFilter] = useState('')
   const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc')
+  const [typeFilter, setTypeFilter] = useState<'all' | 'pdf' | 'image' | 'sheet'>('all')
 
   // Modals & Sheets
   const [isUploadOpen, setIsUploadOpen] = useState(false)
@@ -166,6 +247,11 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
 
   const [newFolderName, setNewFolderName] = useState('')
   const [deleteId, setDeleteId] = useState<string | null>(null)
+  
+  // Selection
+  const [selectedDocIds, setSelectedDocIds] = useState<string[]>([])
+  const [isBulkMoveOpen, setIsBulkMoveOpen] = useState(false)
+  const [isBulkDeleteOpen, setIsBulkDeleteOpen] = useState(false)
 
   // Preview
   const [previewFile, setPreviewFile] = useState<Document | null>(null)
@@ -206,6 +292,27 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
       setPreviewUrl(null)
     }
   }, [previewFile])
+  
+  // Toggle selection
+  const toggleSelection = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation()
+    setSelectedDocIds(prev => 
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    )
+  }
+
+  const selectAll = () => {
+    if (selectedDocIds.length === filteredFiles.length) {
+      setSelectedDocIds([])
+    } else {
+      setSelectedDocIds(filteredFiles.map(f => f.id))
+    }
+  }
+
+  // Clear selections on folder navigation or category change
+  useEffect(() => {
+    setSelectedDocIds([])
+  }, [currentCategory, currentFolderId, typeFilter])
 
   // -- Navigation --
 
@@ -271,6 +378,31 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
       console.error(e)
       setFoldersList([])
     }
+  }
+
+  const handleBulkMoveSubmit = async () => {
+    if (selectedDocIds.length === 0) return
+    setLoadingAction(true)
+    try {
+      if (selectedDocIds.includes(targetFolderId || '')) {
+        toast.error("No puedes mover una carpeta dentro de sí misma")
+        setLoadingAction(false)
+        return
+      }
+
+      await Promise.all(selectedDocIds.map(id => moveDocument(id, targetFolderId)))
+
+      if (targetFolderId !== currentFolderId) {
+        setFiles(prev => prev.filter(f => !selectedDocIds.includes(f.id)))
+        setSelectedDocIds([])
+      }
+
+      toast.success(`${selectedDocIds.length} elementos movidos correctamente`)
+      setIsBulkMoveOpen(false)
+    } catch (e) {
+      toast.error("Error al mover elementos")
+    }
+    setLoadingAction(false)
   }
 
   const handleMoveSubmit = async () => {
@@ -448,6 +580,44 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
     }
   }
 
+  const handleBulkDelete = async () => {
+    if (selectedDocIds.length === 0) return
+    setLoadingAction(true)
+    const supabase = createClient()
+
+    try {
+      const filesToDelete = files.filter(f => selectedDocIds.includes(f.id))
+      
+      // Delete files from storage
+      const storagePaths = filesToDelete.filter(f => !f.is_folder).map(f => f.file_path)
+      if (storagePaths.length > 0) {
+        await supabase.storage.from('documents').remove(storagePaths)
+      }
+
+      // Delete from DB
+      await Promise.all(selectedDocIds.map(id => {
+        const file = filesToDelete.find(f => f.id === id)
+        return deleteDocument(id, file?.is_folder || false)
+      }))
+
+      setFiles(prev => prev.filter(f => !selectedDocIds.includes(f.id)))
+      
+      // Update count for non-folders
+      const nonFolderCount = filesToDelete.filter(f => !f.is_folder).length
+      if (nonFolderCount > 0) {
+         setFileCounts(prev => ({ ...prev, [currentCategory]: Math.max(0, (prev[currentCategory] || 0) - nonFolderCount) }))
+      }
+
+      toast.success(`${selectedDocIds.length} elementos eliminados`)
+      setSelectedDocIds([])
+      setIsBulkDeleteOpen(false)
+    } catch (error: any) {
+      toast.error("Error al eliminar elementos: " + error.message)
+    } finally {
+      setLoadingAction(false)
+    }
+  }
+
   // move helpers
   const getSubfoldersOf = (parentId: string | null) => {
     return foldersList.filter(f => f.id !== moveData.id)
@@ -490,7 +660,20 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
     .filter(file => {
       const matchesSearch = file.name.toLowerCase().includes(searchQuery.toLowerCase())
       const matchesYear = yearFilter ? (file.fiscal_year?.toString() === yearFilter) : true
-      return matchesSearch && matchesYear
+      
+      let matchesType = true
+      if (typeFilter !== 'all' && !file.is_folder) {
+        const mime = file.mime_type?.toLowerCase() || ''
+        const name = file.name.toLowerCase()
+        if (typeFilter === 'pdf') matchesType = mime.includes('pdf') || name.endsWith('.pdf')
+        if (typeFilter === 'image') matchesType = mime.includes('image') || name.endsWith('.jpg') || name.endsWith('.png') || name.endsWith('.jpeg')
+        if (typeFilter === 'sheet') matchesType = mime.includes('sheet') || mime.includes('excel') || mime.includes('csv') || name.endsWith('.xlsx') || name.endsWith('.csv')
+      }
+      
+      // Hide folders if filtering by a specific file type
+      if (typeFilter !== 'all' && file.is_folder) return false;
+
+      return matchesSearch && matchesYear && matchesType
     })
     .sort((a, b) => {
       if (a.is_folder && !b.is_folder) return -1
@@ -595,12 +778,12 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
       {/* Drag Overlay */}
       {isDragging && (
         <div
-          className="absolute inset-0 z-50 bg-primary/10 backdrop-blur-sm border-2 border-primary border-dashed rounded-2xl flex flex-col items-center justify-center animate-in fade-in zoom-in-95 duration-200"
+          className="absolute inset-0 z-50 bg-background/80 backdrop-blur-md border-2 border-primary border-dashed rounded-2xl flex flex-col items-center justify-center animate-in fade-in duration-200"
           onDragLeave={onDragLeave}
           onDragOver={onDragOver}
           onDrop={onDrop}
         >
-          <div className="bg-background p-6 rounded-full shadow-xl animate-bounce">
+          <div className="bg-primary/10 p-6 rounded-full shadow-2xl shadow-primary/20 animate-bounce mb-6">
             <Upload className="h-10 w-10 text-primary" />
           </div>
           <h3 className="mt-4 text-2xl font-bold text-primary">Suelta los archivos aquí</h3>
@@ -609,14 +792,14 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
       )}
 
       {/* Sidebar */}
-      <div className="w-64 border-r bg-muted/10 flex flex-col shrink-0" onDragOver={onDragOver}>
-        <div className="p-4 border-b bg-background/50 backdrop-blur-sm">
-          <h3 className="font-semibold flex items-center gap-2 text-sm text-foreground/80">
-            <Folder className="h-4 w-4 fill-primary/20 text-primary" />
-            Biblioteca
+      <div className="w-64 border-r border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex flex-col shrink-0" onDragOver={onDragOver}>
+        <div className="p-5 border-b border-transparent">
+          <h3 className="font-semibold flex items-center gap-2.5 text-sm text-slate-700 dark:text-slate-300">
+            <Folder className="h-4 w-4 text-blue-500 fill-blue-500/20" />
+            Explorador
           </h3>
         </div>
-        <div className="flex-1 overflow-y-auto p-2 space-y-1">
+        <div className="flex-1 overflow-y-auto px-3 py-2 space-y-1">
           {Object.entries(FOLDER_CONFIG).map(([key, config]) => {
             const isActive = currentCategory === key
             return (
@@ -624,20 +807,22 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
                 key={key}
                 onClick={() => setCurrentCategory(key)}
                 className={cn(
-                  "w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors text-left group",
+                  "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm transition-all text-left group",
                   isActive
-                    ? "bg-primary/10 text-primary shadow-sm"
-                    : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                    ? `bg-white dark:bg-slate-800 font-medium shadow-[0_2px_10px_-3px_rgba(0,0,0,0.05)] border ${config.activeBorder} ${config.activeText}`
+                    : "text-slate-500 dark:text-slate-400 font-normal hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white border border-transparent"
                 )}
               >
                 <div className="flex items-center gap-3">
-                  <config.icon className={cn("h-4 w-4", isActive ? "text-primary" : "text-muted-foreground/70")} />
+                  <config.icon className={cn("h-4 w-4 transition-colors", isActive ? config.activeText : "text-slate-400 dark:text-slate-500")} />
                   <span className="truncate">{config.label}</span>
                 </div>
                 {fileCounts[key] > 0 && (
                   <span className={cn(
-                    "text-[10px] px-1.5 py-0.5 rounded-full font-bold transition-colors",
-                    isActive ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground group-hover:bg-muted-foreground/20"
+                    "text-[10px] px-2 py-0.5 rounded-md font-semibold transition-colors",
+                    isActive 
+                      ? `${config.badgeBg} ${config.badgeText}` 
+                      : "bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:bg-slate-300 dark:group-hover:bg-slate-700"
                   )}>
                     {fileCounts[key]}
                   </span>
@@ -647,9 +832,21 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
           })}
         </div>
 
-        <div className="p-4 border-t bg-background/50 space-y-2">
-          <Button onClick={() => setIsUploadOpen(true)} className="w-full gap-2 font-bold shadow-sm mb-2" size="sm">
-            <Upload className="h-3.5 w-3.5" />
+        <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md space-y-4">
+          <div className="space-y-2.5 px-1">
+            <div className="flex justify-between items-center text-xs font-semibold text-slate-500 dark:text-slate-400">
+              <span>Almacenamiento Local</span>
+              <span className="text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md">
+                {formatFileSize(files.reduce((acc, f) => acc + (f.file_size || 0), 0))}
+              </span>
+            </div>
+            <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
+               <div className="h-full bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full transition-all duration-1000" style={{ width: `${Math.min(100, (files.length / 50) * 100)}%` }} />
+            </div>
+            <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">Capacidad calculada por vista actúal</p>
+          </div>
+          <Button onClick={() => setIsUploadOpen(true)} className="w-full gap-2 rounded-xl shadow-[0_8px_16px_-6px_rgba(59,130,246,0.5)] hover:shadow-[0_12px_20px_-8px_rgba(59,130,246,0.6)] hover:-translate-y-0.5 transition-all bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 border-0 text-white font-medium" size="default">
+            <Upload className="h-4 w-4" />
             Subir Archivo
           </Button>
         </div>
@@ -657,12 +854,12 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
 
       {/* Main Content */}
       <div
-        className="flex-1 flex flex-col bg-background relative z-0 min-w-0"
+        className="flex-1 flex flex-col bg-slate-50/30 dark:bg-slate-900/10 relative z-0 min-w-0"
         onDragOver={onDragOver}
         onDrop={onDrop}
       >
         {/* Toolbar */}
-        <div className="h-16 border-b flex items-center justify-between px-6 gap-4 bg-background/50 backdrop-blur-sm sticky top-0 z-10 shrink-0">
+        <div className="h-[72px] border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 gap-4 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md sticky top-0 z-10 shrink-0">
           <div className="flex flex-col gap-1 min-w-0 flex-1">
             <div className="flex items-center text-sm font-medium overflow-hidden whitespace-nowrap mask-linear-fade">
               <button
@@ -684,9 +881,27 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
               ))}
             </div>
 
-            <div className="text-[10px] text-muted-foreground flex items-center gap-2">
-              <span>{filteredFiles.length} elementos</span>
-              {yearFilter && <span>• Filtrado por {yearFilter}</span>}
+            <div className="flex items-center gap-2 mt-2">
+              <div className="text-[10px] text-slate-500 font-medium bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full shrink-0">
+                {filteredFiles.length} elementos
+              </div>
+              <div className="h-3 w-px bg-slate-200 dark:bg-slate-700 mx-1 shrink-0" />
+              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
+                {(['all', 'pdf', 'image', 'sheet'] as const).map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => setTypeFilter(type)}
+                    className={cn(
+                      "text-[10px] font-semibold px-2.5 py-1 rounded-full transition-all whitespace-nowrap",
+                      typeFilter === type 
+                        ? "bg-slate-800 text-white dark:bg-white dark:text-slate-900 shadow-sm" 
+                        : "bg-transparent text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    )}
+                  >
+                    {type === 'all' ? 'Todos' : type === 'pdf' ? 'PDFs' : type === 'image' ? 'Imágenes' : 'Tablas'}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -701,30 +916,30 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
               />
             </div>
 
-            <div className="flex items-center border rounded-lg p-1 bg-muted/30 gap-1">
-              <div className="flex gap-0.5">
-                <Button
-                  variant={viewMode === 'grid' ? "secondary" : "ghost"}
-                  size="icon"
-                  className="h-7 w-7 rounded-md"
-                  onClick={() => setViewMode('grid')}
-                >
-                  <LayoutGrid className="h-3.5 w-3.5" />
-                </Button>
-                <Button
-                  variant={viewMode === 'list' ? "secondary" : "ghost"}
-                  size="icon"
-                  className="h-7 w-7 rounded-md"
-                  onClick={() => setViewMode('list')}
-                >
-                  <ListIcon className="h-3.5 w-3.5" />
-                </Button>
-              </div>
-              <div className="w-px h-4 bg-border/50 mx-1" />
+            <div className="flex items-center bg-slate-100/80 dark:bg-slate-900/50 rounded-lg p-1 shadow-inner border border-slate-200/50 dark:border-slate-800">
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-7 w-7 rounded-md p-0 hover:bg-background shadow-none"
+                className={cn("h-7 w-7 rounded-md shadow-none transition-all", viewMode === 'grid' && "bg-white dark:bg-slate-800 shadow-sm text-blue-600 dark:text-blue-400")}
+                onClick={() => setViewMode('grid')}
+              >
+                <LayoutGrid className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn("h-7 w-7 rounded-md shadow-none transition-all", viewMode === 'list' && "bg-white dark:bg-slate-800 shadow-sm text-blue-600 dark:text-blue-400")}
+                onClick={() => setViewMode('list')}
+              >
+                <ListIcon className="h-3.5 w-3.5" />
+              </Button>
+              
+              <div className="w-px h-4 bg-slate-300 dark:bg-slate-700 mx-1.5" />
+              
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 rounded-md text-slate-500 hover:text-slate-900 dark:hover:text-white"
                 onClick={() => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
                 title="Ordenar por fecha"
               >
@@ -739,20 +954,52 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto p-6 scroll-smooth">
+        <div className="flex-1 overflow-y-auto p-6 scroll-smooth relative">
+          
+          {/* Floating Bulk Action Bar */}
+          {selectedDocIds.length > 0 && (
+            <div className="sticky top-0 z-20 mb-6 w-full animate-in slide-in-from-top-4 fade-in duration-200">
+               <div className="bg-slate-900 dark:bg-slate-800 text-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-3 px-6 flex items-center justify-between border border-slate-700/50 backdrop-blur-xl">
+                 <div className="flex items-center gap-4">
+                   <div className="bg-blue-500/20 text-blue-400 h-8 w-8 rounded-full flex items-center justify-center font-bold text-sm">
+                     {selectedDocIds.length}
+                   </div>
+                   <span className="font-medium text-sm">Seleccionados</span>
+                 </div>
+                 <div className="flex items-center gap-3">
+                   <Button onClick={selectAll} variant="ghost" className="text-slate-300 hover:text-white hover:bg-slate-800 h-8 text-xs font-medium px-3">
+                     {selectedDocIds.length === filteredFiles.length ? "Deseleccionar Todos" : "Seleccionar Todos"}
+                   </Button>
+                   <div className="w-px h-4 bg-slate-700 mx-1" />
+                   <Button onClick={() => setIsBulkMoveOpen(true)} variant="ghost" className="text-slate-300 hover:text-white hover:bg-slate-800 h-8 text-xs font-medium px-3 gap-2">
+                     <Move className="h-3.5 w-3.5" />
+                     Mover
+                   </Button>
+                   <Button onClick={() => setIsBulkDeleteOpen(true)} variant="ghost" className="text-red-400 hover:text-red-300 hover:bg-red-500/10 h-8 text-xs font-medium px-3 gap-2">
+                     <Trash2 className="h-3.5 w-3.5" />
+                     Eliminar
+                   </Button>
+                   <Button onClick={() => setSelectedDocIds([])} variant="ghost" size="icon" className="text-slate-400 hover:text-white hover:bg-slate-800 h-8 w-8 rounded-full ml-2">
+                     <X className="h-4 w-4" />
+                   </Button>
+                 </div>
+               </div>
+            </div>
+          )}
+
           {loadingFiles ? (
             viewMode === 'grid' ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                 {[...Array(10)].map((_, i) => (
-                  <div key={i} className="aspect-[1/1] rounded-xl border p-4 flex flex-col justify-between">
+                  <div key={i} className="aspect-square rounded-[20px] border border-slate-100 dark:border-slate-800 p-5 flex flex-col justify-between bg-slate-50/50 dark:bg-slate-900/30">
                     <div className="flex-1 flex items-center justify-center">
-                      <Skeleton className="h-14 w-14 rounded-2xl" />
+                      <Skeleton className="h-16 w-16 rounded-2xl bg-slate-200/50 dark:bg-slate-700/50" />
                     </div>
-                    <div className="space-y-2">
-                      <Skeleton className="h-3 w-full" />
-                      <div className="flex justify-between">
-                        <Skeleton className="h-2 w-10" />
-                        <Skeleton className="h-2 w-10" />
+                    <div className="space-y-3 mt-4">
+                      <Skeleton className="h-3 w-full bg-slate-200/50 dark:bg-slate-700/50" />
+                      <div className="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-800">
+                        <Skeleton className="h-2 w-12 bg-slate-200/50 dark:bg-slate-700/50 rounded-full" />
+                        <Skeleton className="h-2 w-8 bg-slate-200/50 dark:bg-slate-700/50 rounded-full" />
                       </div>
                     </div>
                   </div>
@@ -763,19 +1010,23 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
                 <Table>
                   <TableHeader className="bg-muted/40">
                     <TableRow>
-                      <TableHead>Nombre</TableHead>
+                      <TableHead className="w-[40px] px-4"></TableHead>
+                      <TableHead className="pl-0">Nombre</TableHead>
                       <TableHead>Fecha</TableHead>
-                      <TableHead>Año</TableHead>
+                      <TableHead>Año Fiscal</TableHead>
                       <TableHead>Tamaño</TableHead>
+                      <TableHead className="w-[50px]"></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {[...Array(5)].map((_, i) => (
                       <TableRow key={i}>
-                        <TableCell><div className="flex items-center gap-3"><Skeleton className="h-8 w-8 rounded-lg" /><Skeleton className="h-4 w-32" /></div></TableCell>
+                        <TableCell className="w-[40px] px-4"><Skeleton className="h-4 w-4 rounded-[4px]" /></TableCell>
+                        <TableCell className="pl-0"><div className="flex items-center gap-3"><Skeleton className="h-10 w-10 rounded-xl" /><Skeleton className="h-4 w-32" /></div></TableCell>
                         <TableCell><Skeleton className="h-4 w-20" /></TableCell>
                         <TableCell><Skeleton className="h-4 w-10" /></TableCell>
                         <TableCell><Skeleton className="h-4 w-16" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-4 ml-auto" /></TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -785,10 +1036,12 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
           ) : filteredFiles.length > 0 ? (
             <>
               {viewMode === 'grid' ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 pb-20">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-20">
                   {filteredFiles.map((file) => {
                     const isFolder = file.is_folder
+                    const activeCat = FOLDER_CONFIG[currentCategory]
                     const FileIcon = isFolder ? Folder : getFileIcon(file.mime_type)
+                    const iconStyle = isFolder ? activeCat.cardGradient : getFileStyle(file.mime_type)
 
                     return (
                       <ContextMenuWrapper key={file.id} file={file}>
@@ -796,25 +1049,46 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
                           onClick={() => isFolder ? handleOpenFolder(file) : setPreviewFile(file)}
                           onDoubleClick={() => isFolder && handleOpenFolder(file)}
                           className={cn(
-                            "group relative flex flex-col p-4 rounded-xl border bg-card/50 transition-all cursor-pointer aspect-[1/1] justify-between",
-                            isFolder ? "hover:bg-primary/5 hover:border-primary/20" : "hover:shadow-md hover:border-border hover:bg-card"
+                            "group relative flex flex-col p-5 rounded-[20px] border transition-all cursor-pointer aspect-square justify-between shadow-sm hover:shadow-lg hover:-translate-y-1",
+                            selectedDocIds.includes(file.id) ? "ring-2 ring-blue-500 bg-blue-50/50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800" :
+                            isFolder 
+                              ? `bg-slate-50/50 dark:bg-slate-900/30 hover:bg-white dark:hover:bg-slate-800 border-slate-200/50 dark:border-slate-800/50 hover:${activeCat.activeBorder}` 
+                              : "bg-white dark:bg-[#0f1115] hover:bg-slate-50 dark:hover:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
                           )}
                         >
-                          <div className="flex-1 flex flex-col items-center justify-center gap-3">
-                            <div className={cn(
-                              "h-14 w-14 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm",
-                              isFolder ? "bg-amber-100 text-amber-500" : "bg-muted text-muted-foreground"
-                            )}>
-                              <FileIcon className={cn("h-7 w-7", isFolder && "fill-current")} />
+                          <div 
+                            className="absolute top-3 left-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={(e) => toggleSelection(e, file.id)}
+                          >
+                             <div className={cn(
+                               "h-5 w-5 rounded border flex items-center justify-center transition-colors",
+                               selectedDocIds.includes(file.id) ? "bg-blue-500 border-blue-500 opacity-100" : "border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:border-blue-400"
+                             )}>
+                               {selectedDocIds.includes(file.id) && <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
+                             </div>
+                          </div>
+
+                          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10" onClick={e => e.stopPropagation()}>
+                            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur border border-slate-200 dark:border-slate-800 rounded-lg shadow-sm">
+                              <DropdownActionMenu file={file} />
                             </div>
-                            <p className="font-semibold text-xs text-center line-clamp-2 px-1 leading-relaxed break-words w-full select-none">
+                          </div>
+
+                          <div className="flex-1 flex flex-col items-center justify-center gap-4">
+                            <div className={cn(
+                              "h-16 w-16 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110 shadow-sm border border-black/5 dark:border-white/5 bg-gradient-to-br",
+                              iconStyle
+                            )}>
+                              <FileIcon className={cn("h-7 w-7", isFolder && "fill-current/20")} strokeWidth={isFolder ? 1.5 : 2} />
+                            </div>
+                            <p className="font-semibold text-[13px] text-slate-700 dark:text-slate-200 text-center line-clamp-2 px-2 leading-tight break-words w-full select-none group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
                               {file.name}
                             </p>
                           </div>
 
                           {!isFolder && (
-                            <div className="flex items-center justify-between text-[10px] text-muted-foreground font-medium w-full pt-2 border-t border-border/50">
-                              <span>{formatFileSize(file.file_size)}</span>
+                            <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium w-full pt-4 mt-2 border-t border-slate-100 dark:border-slate-800/50">
+                              <span className="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md">{formatFileSize(file.file_size)}</span>
                               <span>{file.fiscal_year || '-'}</span>
                             </div>
                           )}
@@ -824,47 +1098,65 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
                   })}
                 </div>
               ) : (
-                <div className="border rounded-xl overflow-hidden shadow-sm bg-card mb-20">
+                <div className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm bg-white dark:bg-slate-950 mb-20">
                   <Table>
-                    <TableHeader className="bg-muted/40">
-                      <TableRow>
-                        <TableHead className="w-[50%]">Nombre</TableHead>
-                        <TableHead>Fecha</TableHead>
-                        <TableHead>Año Fiscal</TableHead>
-                        <TableHead className="text-right">Tamaño</TableHead>
-                        <TableHead className="w-[50px]"></TableHead>
+                    <TableHeader className="bg-slate-50/80 dark:bg-slate-900/50">
+                      <TableRow className="border-slate-200 dark:border-slate-800 hover:bg-transparent">
+                        <TableHead className="w-[40px] px-4"></TableHead>
+                        <TableHead className="w-[50%] text-slate-500 font-semibold h-10 pl-0">Nombre</TableHead>
+                        <TableHead className="text-slate-500 font-semibold h-10">Fecha</TableHead>
+                        <TableHead className="text-slate-500 font-semibold h-10">Año Fiscal</TableHead>
+                        <TableHead className="text-right text-slate-500 font-semibold h-10">Tamaño</TableHead>
+                        <TableHead className="w-[50px] h-10"></TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {filteredFiles.map((file) => {
+                        const activeCat = FOLDER_CONFIG[currentCategory]
                         const isFolder = file.is_folder
                         const FileIcon = isFolder ? Folder : getFileIcon(file.mime_type)
+                        const iconStyle = isFolder ? activeCat.cardGradient : getFileStyle(file.mime_type)
+
                         return (
                           <TableRow
                             key={file.id}
-                            className="group cursor-pointer hover:bg-muted/50"
+                            className={cn(
+                              "group cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900/50 border-slate-100 dark:border-slate-800 transition-colors",
+                              selectedDocIds.includes(file.id) && "bg-blue-50/50 dark:bg-blue-900/20"
+                            )}
                             onClick={() => isFolder ? handleOpenFolder(file) : setPreviewFile(file)}
                           >
-                            <TableCell className="font-medium">
+                            <TableCell className="w-[40px] px-4" onClick={(e) => toggleSelection(e, file.id)}>
+                             <div className={cn(
+                               "h-4 w-4 rounded-[4px] border flex items-center justify-center transition-colors cursor-pointer",
+                               selectedDocIds.includes(file.id) ? "bg-blue-500 border-blue-500" : "border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 group-hover:border-blue-400"
+                             )}>
+                               {selectedDocIds.includes(file.id) && <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
+                             </div>
+                            </TableCell>
+                            <TableCell className="font-medium py-3 pl-0">
                               <ContextMenuWrapper file={file}>
-                                <div className="flex items-center gap-3">
-                                  <div className={cn("h-8 w-8 rounded-lg flex items-center justify-center", isFolder ? "bg-amber-100/50 text-amber-600" : "bg-muted text-muted-foreground")}>
-                                    <FileIcon className="h-4 w-4" />
+                                <div className="flex items-center gap-3.5">
+                                  <div className={cn(
+                                    "h-10 w-10 rounded-xl flex items-center justify-center border border-black/5 dark:border-white/5 bg-gradient-to-br shrink-0",
+                                    iconStyle
+                                  )}>
+                                    <FileIcon className={cn("h-5 w-5", isFolder && "fill-current/20")} strokeWidth={isFolder ? 1.5 : 2} />
                                   </div>
-                                  <span className="truncate max-w-[200px] sm:max-w-[300px]">{file.name}</span>
+                                  <span className="truncate max-w-[200px] sm:max-w-[300px] text-slate-700 dark:text-slate-200 font-medium group-hover:text-foreground transition-colors">{file.name}</span>
                                 </div>
                               </ContextMenuWrapper>
                             </TableCell>
-                            <TableCell className="text-xs text-muted-foreground">
+                            <TableCell className="text-xs text-slate-500 dark:text-slate-400">
                               {new Date(file.created_at).toLocaleDateString()}
                             </TableCell>
-                            <TableCell className="text-xs">
+                            <TableCell className="text-xs text-slate-600 dark:text-slate-400">
                               {file.fiscal_year || '-'}
                             </TableCell>
-                            <TableCell className="text-right text-xs text-muted-foreground font-mono">
+                            <TableCell className="text-right text-xs text-slate-500 dark:text-slate-500 font-mono">
                               {isFolder ? '-' : formatFileSize(file.file_size)}
                             </TableCell>
-                            <TableCell onClick={(e) => e.stopPropagation()}>
+                            <TableCell onClick={(e) => e.stopPropagation()} className="pr-4">
                               <DropdownActionMenu file={file} />
                             </TableCell>
                           </TableRow>
@@ -877,14 +1169,27 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
             </>
           ) : (
             <div
-              className="h-full flex flex-col items-center justify-center text-muted-foreground/50 border-2 border-dashed rounded-xl border-muted-foreground/10 bg-muted/5 cursor-pointer hover:bg-muted/10 transition-colors"
+              className="h-full flex flex-col items-center justify-center w-full px-4"
               onClick={() => setIsUploadOpen(true)}
             >
-              <div className="h-16 w-16 bg-muted/20 rounded-full flex items-center justify-center mb-4 ring-8 ring-muted/10">
-                <Upload className="h-8 w-8 opacity-20" />
+              <div className="max-w-md w-full border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-[2rem] bg-gradient-to-b from-slate-50/50 to-white dark:from-slate-900/20 dark:to-slate-950 p-12 flex flex-col items-center text-center cursor-pointer hover:border-blue-400 dark:hover:border-blue-600 hover:bg-blue-50/10 dark:hover:bg-blue-900/10 transition-all group shadow-sm">
+                <div className="relative mb-6">
+                  <div className="absolute inset-0 bg-blue-400 blur-2xl opacity-20 group-hover:opacity-40 transition-opacity rounded-full"></div>
+                  <div className="h-24 w-24 bg-white dark:bg-slate-900 rounded-[2rem] flex items-center justify-center shadow-lg border border-slate-100 dark:border-slate-800 group-hover:-translate-y-2 transition-transform duration-500 relative z-10 rotate-3 group-hover:rotate-6">
+                    <Upload className="h-10 w-10 text-blue-500" strokeWidth={1.5} />
+                  </div>
+                </div>
+                <h3 className="font-bold text-xl text-slate-800 dark:text-slate-100 mb-2">Nada por aquí aún</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-[280px]">
+                  {typeFilter !== 'all' 
+                    ? `No hay archivos de tipo ${typeFilter === 'pdf' ? 'PDF' : typeFilter === 'image' ? 'Imagen' : 'Tabla'} en esta sección.`
+                    : "Arrastra tus archivos y carpetas directamente a esta caja o haz clic para buscarlos en tu computadora."}
+                </p>
+                
+                <Button className="rounded-xl px-8 shadow-md hover:shadow-lg bg-blue-600 hover:bg-blue-700 pointer-events-none">
+                  Subir Archivos
+                </Button>
               </div>
-              <p className="font-semibold text-sm">Carpeta vacía</p>
-              <p className="text-xs mt-1">Arrastra archivos aquí o haz click</p>
             </div>
           )}
         </div>
@@ -1188,6 +1493,69 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      {/* Bulk Delete Dialog */}
+      <AlertDialog open={isBulkDeleteOpen} onOpenChange={setIsBulkDeleteOpen}>
+        <AlertDialogContent className="rounded-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar {selectedDocIds.length} elementos?</AlertDialogTitle>
+            <AlertDialogDescription>Esta acción no se puede deshacer. Se eliminarán permanentemente los archivos y/o carpetas seleccionados.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={loadingAction}>Cancelar</AlertDialogCancel>
+            <Button onClick={handleBulkDelete} disabled={loadingAction} className="bg-red-500 hover:bg-red-600 text-white">
+               {loadingAction ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Trash2 className="h-4 w-4 mr-2" />}
+               Eliminar Definitivamente
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Bulk Move Dialog */}
+      <Dialog open={isBulkMoveOpen} onOpenChange={setIsBulkMoveOpen}>
+        <DialogContent className="sm:max-w-md rounded-2xl">
+          <DialogHeader>
+            <DialogTitle>Mover {selectedDocIds.length} elementos</DialogTitle>
+            <DialogDescription>Selecciona la carpeta de destino</DialogDescription>
+          </DialogHeader>
+
+          <div className="h-[300px] overflow-y-auto border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-900/30 p-2">
+            <div className="space-y-1">
+              <button
+                onClick={() => setTargetFolderId(null)}
+                className={cn(
+                  "w-full flex items-center gap-2 p-2.5 rounded-lg text-sm transition-colors cursor-pointer",
+                  targetFolderId === null ? "bg-blue-100/50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium" : "text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800"
+                )}
+              >
+                <FolderOpen className="h-4 w-4" />
+                Inicio ({FOLDER_CONFIG[currentCategory]?.label})
+              </button>
+
+              {getSubfoldersOf(null).map(folder => (
+                <button
+                  key={folder.id}
+                  onClick={() => setTargetFolderId(folder.id)}
+                  disabled={selectedDocIds.includes(folder.id)}
+                  className={cn(
+                    "w-full flex items-center gap-2 p-2.5 rounded-lg text-sm transition-colors pl-8 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed",
+                    targetFolderId === folder.id ? "bg-blue-100/50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium" : "text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800"
+                  )}
+                >
+                  <Folder className="h-4 w-4" />
+                  {folder.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setIsBulkMoveOpen(false)} disabled={loadingAction}>Cancelar</Button>
+            <Button onClick={handleBulkMoveSubmit} disabled={loadingAction || targetFolderId === currentFolderId} className="bg-blue-600 hover:bg-blue-700 text-white">
+              {loadingAction ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : "Mover Aquí"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -81,7 +81,7 @@ export function Sidebar({ user, profile }: SidebarProps) {
                         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                             <Calculator className="h-4 w-4" />
                         </div>
-                        <span className="font-bold text-base tracking-tight">Lira Admin</span>
+                        <span className="font-bold text-base tracking-tight">NOMBRE PANEL</span>
                     </Link>
                 ) : (
                     <div className="mx-auto flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">

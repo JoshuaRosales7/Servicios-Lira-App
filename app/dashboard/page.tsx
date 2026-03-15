@@ -22,7 +22,7 @@ export default async function DashboardPage() {
       .from('clients')
       .select('id')
       .eq('user_id', user.id)
-      .single()
+      .maybeSingle()
 
     if (clientRecord) redirect(`/dashboard/clients/${clientRecord.id}`)
 

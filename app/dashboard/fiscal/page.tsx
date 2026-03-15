@@ -19,7 +19,7 @@ export default async function FiscalPage({
 
   const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
   if (profile?.role === 'client') {
-    const { data: clientRecord } = await supabase.from('clients').select('id').eq('user_id', user.id).single()
+    const { data: clientRecord } = await supabase.from('clients').select('id').eq('user_id', user.id).maybeSingle()
     if (clientRecord) redirect(`/dashboard/clients/${clientRecord.id}`)
   }
 
@@ -34,15 +34,35 @@ export default async function FiscalPage({
   if (regime !== 'all') query = query.eq('fiscal_data.tax_regime', regime)
   if (frequency !== 'all') query = query.eq('fiscal_data.declaration_frequency', frequency)
 
-  const { data: clients } = await query.limit(100)
-  const clientsWithFiscal = clients?.filter((c) => c.fiscal_data) || []
-  const clientsWithoutFiscal = clients?.filter((c) => !c.fiscal_data) || []
-  const displayingClients = clients || []
+  const { data: rawClients } = await query.limit(100)
+  
+  // Normalize fiscal_data from array to single object since it's a 1:1 relation in practice
+  const displayingClients = (rawClients || []).map(client => ({
+    ...client,
+    fiscal_data: Array.isArray(client.fiscal_data) ? client.fiscal_data[0] || null : client.fiscal_data
+  }))
+
+  const clientsWithFiscal = displayingClients.filter((c) => c.fiscal_data)
+  const clientsWithoutFiscal = displayingClients.filter((c) => !c.fiscal_data)
+
+  const regimeLabels: Record<string, string> = {
+    pequeño_contuyente: 'Pequeño Contribuyente',
+    pequeño_contribuyente: 'Pequeño Contribuyente',
+    general: 'Régimen General',
+    opcional_simplificado: 'Opcional Simplificado',
+    utilidades: 'Sobre Utilidades'
+  }
+
+  const frequencyLabels: Record<string, string> = {
+    monthly: 'Mensual',
+    quarterly: 'Trimestral',
+    annual: 'Anual'
+  }
 
   const exportData = displayingClients.map(c => ({
     NombreLegal: c.legal_name, NIT: c.nit,
-    Regimen: c.fiscal_data?.tax_regime || 'No Registrado',
-    Frecuencia: c.fiscal_data?.declaration_frequency || '-',
+    Regimen: c.fiscal_data?.tax_regime ? (regimeLabels[c.fiscal_data.tax_regime] || c.fiscal_data.tax_regime) : 'No Registrado',
+    Frecuencia: c.fiscal_data?.declaration_frequency ? (frequencyLabels[c.fiscal_data.declaration_frequency] || c.fiscal_data.declaration_frequency) : '-',
     RetencionISR: c.fiscal_data?.isr_withholding ? 'Si' : 'No',
   }))
 
@@ -111,10 +131,12 @@ export default async function FiscalPage({
                     <div className="mt-2 sm:mt-0 flex items-center gap-3">
                       {client.fiscal_data ? (
                         <div className="text-right">
-                          <p className="text-sm font-medium text-slate-900 dark:text-white">{client.fiscal_data.tax_regime || 'Sin régimen'}</p>
+                          <p className="text-sm font-medium text-slate-900 dark:text-white">
+                            {regimeLabels[client.fiscal_data.tax_regime] || client.fiscal_data.tax_regime || 'Sin régimen'}
+                          </p>
                           <p className="text-xs text-slate-500 flex items-center justify-end gap-1">
                             <Calendar className="h-3 w-3" />
-                            {client.fiscal_data.declaration_frequency === 'monthly' ? 'Mensual' : client.fiscal_data.declaration_frequency === 'quarterly' ? 'Trimestral' : 'N/D'}
+                            {frequencyLabels[client.fiscal_data.declaration_frequency] || 'N/D'}
                           </p>
                         </div>
                       ) : (
@@ -125,6 +147,7 @@ export default async function FiscalPage({
                   </Link>
                 ))}
               </div>
+
             ) : (
               <div className="flex flex-col items-center justify-center py-16 text-center">
                 <Receipt className="h-8 w-8 text-slate-300 mb-3" />
