@@ -7,14 +7,14 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
 export function CorporateHeaderSkeleton() {
   return (
-    <div className="bg-white dark:bg-slate-900 border-b border-slate-200/50 dark:border-slate-800/50">
+    <div className="bg-card border-b border-border/50">
       <div className="w-full px-6 py-8">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-3">
-            <Skeleton className="h-9 w-64 bg-slate-200 dark:bg-slate-800" />
-            <Skeleton className="h-5 w-96 bg-slate-200 dark:bg-slate-800" />
+            <Skeleton className="h-9 w-64 bg-muted" />
+            <Skeleton className="h-5 w-96 bg-muted" />
           </div>
-          <Skeleton className="h-11 w-40 bg-slate-900 dark:bg-slate-100" />
+          <Skeleton className="h-11 w-40 bg-foreground dark:bg-background" />
         </div>
       </div>
     </div>
@@ -25,17 +25,17 @@ export function CorporateStatsGridSkeleton() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {[...Array(4)].map((_, i) => (
-        <div key={i} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/50 dark:border-slate-800/50 p-6 shadow-sm">
+        <div key={i} className="bg-card rounded-2xl border border-border/50 p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <Skeleton className="h-8 w-16 bg-slate-200 dark:bg-slate-800" />
-            <Skeleton className="h-6 w-6 rounded-xl bg-slate-200 dark:bg-slate-800" />
+            <Skeleton className="h-8 w-16 bg-muted" />
+            <Skeleton className="h-6 w-6 rounded-xl bg-muted" />
           </div>
           <div className="space-y-2">
-            <Skeleton className="h-10 w-12 bg-slate-200 dark:bg-slate-800" />
-            <Skeleton className="h-4 w-20 bg-slate-200 dark:bg-slate-800" />
+            <Skeleton className="h-10 w-12 bg-muted" />
+            <Skeleton className="h-4 w-20 bg-muted" />
           </div>
           <div className="mt-4">
-            <Skeleton className="h-5 w-24 bg-slate-200 dark:bg-slate-800" />
+            <Skeleton className="h-5 w-24 bg-muted" />
           </div>
         </div>
       ))}
@@ -45,33 +45,33 @@ export function CorporateStatsGridSkeleton() {
 
 export function CorporateTableSkeleton({ rows = 8 }: { rows?: number }) {
   return (
-    <Card className="border-slate-200/50 dark:border-slate-800/50 shadow-sm">
-      <div className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+    <Card className="border-border/50 shadow-sm">
+      <div className="bg-muted/30 border-b border-border">
         <div className="px-6 py-4 grid grid-cols-6 gap-4">
           {[...Array(6)].map((_, i) => (
-            <Skeleton key={i} className="h-5 w-20 bg-slate-200 dark:bg-slate-800" />
+            <Skeleton key={i} className="h-5 w-20 bg-muted" />
           ))}
         </div>
       </div>
       <CardContent className="p-0">
         {[...Array(rows)].map((_, i) => (
-          <div key={i} className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+          <div key={i} className="px-6 py-4 border-b border-border last:border-0 hover:bg-muted/30 transition-colors">
             <div className="grid grid-cols-6 gap-4 items-center">
               <div className="flex items-center gap-4">
-                <Skeleton className="h-11 w-11 rounded-xl bg-slate-200 dark:bg-slate-800" />
+                <Skeleton className="h-11 w-11 rounded-xl bg-muted" />
                 <div className="space-y-2">
-                  <Skeleton className="h-4 w-32 bg-slate-200 dark:bg-slate-800" />
-                  <Skeleton className="h-3 w-24 bg-slate-200 dark:bg-slate-800" />
+                  <Skeleton className="h-4 w-32 bg-muted" />
+                  <Skeleton className="h-3 w-24 bg-muted" />
                 </div>
               </div>
-              <Skeleton className="h-6 w-16 bg-slate-200 dark:bg-slate-800" />
+              <Skeleton className="h-6 w-16 bg-muted" />
               <div className="space-y-1">
-                <Skeleton className="h-4 w-28 bg-slate-200 dark:bg-slate-800" />
-                <Skeleton className="h-4 w-24 bg-slate-200 dark:bg-slate-800" />
+                <Skeleton className="h-4 w-28 bg-muted" />
+                <Skeleton className="h-4 w-24 bg-muted" />
               </div>
-              <Skeleton className="h-4 w-20 bg-slate-200 dark:bg-slate-800" />
-              <Skeleton className="h-6 w-14 bg-slate-200 dark:bg-slate-800 rounded-full" />
-              <Skeleton className="h-8 w-8 bg-slate-200 dark:bg-slate-800 rounded-lg" />
+              <Skeleton className="h-4 w-20 bg-muted" />
+              <Skeleton className="h-6 w-14 bg-muted rounded-full" />
+              <Skeleton className="h-8 w-8 bg-muted rounded-lg" />
             </div>
           </div>
         ))}
@@ -82,7 +82,7 @@ export function CorporateTableSkeleton({ rows = 8 }: { rows?: number }) {
 
 export function CorporateFiltersSkeleton() {
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/50 dark:border-slate-800/50 p-6 shadow-sm">
+    <div className="bg-card rounded-xl border border-slate-200/50 dark:border-slate-800/50 p-6 shadow-sm">
       <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
         <div className="flex flex-col sm:flex-row gap-4 flex-1">
           <Skeleton className="h-10 w-full max-w-sm bg-slate-200 dark:bg-slate-800" />
@@ -102,7 +102,7 @@ export function CorporateFiltersSkeleton() {
 
 export function CorporatePaginationSkeleton() {
   return (
-    <div className="px-6 py-4 border-t border-slate-200 dark:border-slate-800 bg-gradient-to-r from-slate-50/50 to-slate-100/50 dark:from-slate-800/50 dark:to-slate-900/50">
+    <div className="px-6 py-4 border-t border-border bg-gradient-to-r from-slate-50/50 to-slate-100/50 dark:from-slate-800/50 dark:to-slate-900/50">
       <div className="flex items-center justify-between">
         <Skeleton className="h-5 w-32 bg-slate-200 dark:bg-slate-800" />
         <div className="flex items-center gap-2">
@@ -121,7 +121,7 @@ export function CorporateDetailSkeleton() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/50 dark:border-slate-800/50 p-6 shadow-sm">
+      <div className="bg-card rounded-xl border border-slate-200/50 dark:border-slate-800/50 p-6 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="space-y-2">
             <Skeleton className="h-8 w-64 bg-slate-200 dark:bg-slate-800" />
@@ -182,7 +182,7 @@ export function CorporateTabsSkeleton() {
   return (
     <div className="space-y-6">
       {/* Tabs */}
-      <div className="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl w-fit">
+      <div className="flex gap-1 p-1 bg-muted rounded-xl w-fit">
         {[...Array(5)].map((_, i) => (
           <Skeleton key={i} className="h-9 px-4 bg-slate-200 dark:bg-slate-700 rounded-lg" />
         ))}

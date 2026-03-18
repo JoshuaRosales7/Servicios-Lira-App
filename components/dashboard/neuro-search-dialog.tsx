@@ -38,7 +38,13 @@ interface Message {
 }
 
 export function NeuroSearchDialog({ open, onOpenChange }: NeuroSearchDialogProps) {
+    const [mounted, setMounted] = useState(false)
     const [query, setQuery] = useState('')
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+
     const [messages, setMessages] = useState<Message[]>([
         {
             role: 'assistant',
@@ -123,6 +129,8 @@ export function NeuroSearchDialog({ open, onOpenChange }: NeuroSearchDialogProps
         }
         return null
     }
+
+    if (!mounted) return null
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -237,3 +245,4 @@ export function NeuroSearchDialog({ open, onOpenChange }: NeuroSearchDialogProps
         </Dialog>
     )
 }
+

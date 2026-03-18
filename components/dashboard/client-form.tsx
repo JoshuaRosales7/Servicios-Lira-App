@@ -46,6 +46,7 @@ export function ClientForm({ client }: ClientFormProps) {
     fiscal_status: client?.fiscal_status || 'active',
     create_access: false,
     password: '',
+    start_date: client?.start_date || '',
   })
 
   useEffect(() => {
@@ -92,6 +93,7 @@ export function ClientForm({ client }: ClientFormProps) {
           department: formData.department,
           person_type: formData.person_type,
           fiscal_status: formData.fiscal_status,
+          start_date: formData.start_date || null,
         })
         .eq('id', client.id)
         .select()
@@ -131,8 +133,8 @@ export function ClientForm({ client }: ClientFormProps) {
 
       {/* Información Básica */}
       <div>
-        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">Información Básica</h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">Datos de identificación y contacto del cliente</p>
+        <h3 className="text-sm font-semibold text-foreground mb-1">Información Básica</h3>
+        <p className="text-xs text-muted-foreground mb-4">Datos de identificación y contacto del cliente</p>
         <div className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
@@ -232,6 +234,17 @@ export function ClientForm({ client }: ClientFormProps) {
                 placeholder="+1 (555) 000-0000"
               />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="start_date">
+                {formData.person_type === 'individual' ? 'Fecha de Nacimiento' : 'Inicio de Operaciones'}
+              </Label>
+              <Input
+                id="start_date"
+                type="date"
+                value={formData.start_date}
+                onChange={(e) => handleChange('start_date', e.target.value)}
+              />
+            </div>
           </div>
 
 
@@ -242,8 +255,8 @@ export function ClientForm({ client }: ClientFormProps) {
 
       {/* Dirección */}
       <div>
-        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">Dirección</h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">Información de dirección física del cliente</p>
+        <h3 className="text-sm font-semibold text-foreground mb-1">Dirección</h3>
+        <p className="text-xs text-muted-foreground mb-4">Información de dirección física del cliente</p>
         <div className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="fiscal_address">Dirección Fiscal</Label>
@@ -284,11 +297,11 @@ export function ClientForm({ client }: ClientFormProps) {
         <div className="h-px bg-slate-200 dark:bg-slate-800" />
 
         <div>
-          <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1 flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-foreground mb-1 flex items-center gap-2">
             <ShieldCheck className="h-4 w-4 text-blue-600" />
             Acceso al Sistema
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">Permite que el cliente acceda a su panel</p>
+          <p className="text-xs text-muted-foreground mb-4">Permite que el cliente acceda a su panel</p>
           <div className="space-y-4">
             <div className="flex items-center space-x-3 p-4 rounded-xl bg-background border border-border/40">
               <Checkbox
@@ -365,3 +378,4 @@ export function ClientForm({ client }: ClientFormProps) {
     </form>
   )
 }
+

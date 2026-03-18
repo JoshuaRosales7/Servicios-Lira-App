@@ -21,7 +21,7 @@ export function ClientSort({ defaultValue = 'created_at' }: ClientSortProps) {
   return (
     <Select value={defaultValue} onValueChange={handleSortChange}>
       <SelectTrigger className="w-48 h-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all duration-200 hover:shadow-sm">
-        <ArrowUpDown className="h-4 w-4 mr-2 text-slate-500 dark:text-slate-400" />
+        <ArrowUpDown className="h-4 w-4 mr-2 text-muted-foreground" />
         <SelectValue placeholder="Ordenar por..." />
       </SelectTrigger>
       <SelectContent className="w-48 p-1">

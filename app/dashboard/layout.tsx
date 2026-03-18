@@ -24,12 +24,12 @@ export default async function DashboardLayout({
     .single()
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-muted/40">
       <CommandMenu />
       <Sidebar user={user} profile={profile} />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <TopBar isAdmin={profile?.role === 'admin'} />
-        <main className="flex-1 overflow-y-auto bg-white">
+        <main className="flex-1 overflow-y-auto bg-background">
           <div className="p-6">
             {children}
           </div>
@@ -38,3 +38,4 @@ export default async function DashboardLayout({
     </div>
   )
 }
+

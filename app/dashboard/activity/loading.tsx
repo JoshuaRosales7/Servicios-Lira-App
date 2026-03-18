@@ -9,7 +9,7 @@ export default function ActivityLoading() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Corporate Header */}
-      <div className="bg-white dark:bg-slate-900 border-b border-slate-200/50 dark:border-slate-800/50">
+      <div className="bg-card border-b border-slate-200/50 dark:border-slate-800/50">
         <div className="w-full px-6 py-8">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="space-y-3">
@@ -28,7 +28,7 @@ export default function ActivityLoading() {
         {/* Activity Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/50 dark:border-slate-800/50 p-6 shadow-sm">
+            <div key={i} className="bg-card rounded-2xl border border-slate-200/50 dark:border-slate-800/50 p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <div className="h-8 w-16 bg-slate-200 dark:bg-slate-800 rounded"></div>
                 <div className="h-6 w-6 rounded-xl bg-slate-200 dark:bg-slate-800"></div>
@@ -47,7 +47,7 @@ export default function ActivityLoading() {
         {/* Activity Timeline */}
         <div className="space-y-4">
           {[...Array(10)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/50 dark:border-slate-800/50 shadow-sm p-6 hover:shadow-md transition-shadow">
+            <div key={i} className="bg-card rounded-xl border border-slate-200/50 dark:border-slate-800/50 shadow-sm p-6 hover:shadow-md transition-shadow">
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0">
                   <div className="h-10 w-10 rounded-full bg-slate-200 dark:bg-slate-800"></div>

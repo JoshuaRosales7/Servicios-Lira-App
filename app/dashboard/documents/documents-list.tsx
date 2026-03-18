@@ -167,3 +167,4 @@ export async function DocumentsList({ searchParams }: DocumentsListProps) {
         </Card>
     )
 }
+

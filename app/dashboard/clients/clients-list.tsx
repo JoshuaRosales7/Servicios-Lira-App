@@ -43,18 +43,18 @@ export async function ClientsList({ searchParams }: ClientsListProps) {
     const totalPages = Math.ceil((count || 0) / limit)
 
     return (
-        <div className="flex flex-col h-full bg-white dark:bg-slate-950">
+        <div className="flex flex-col h-full bg-card">
             {/* Header Area */}
-            <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-900/20 backdrop-blur-sm">
+            <div className="px-6 py-5 border-b border-border/60 bg-muted/20 backdrop-blur-sm">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                        <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
                             <span>Directorio Activo</span>
                             <span className="flex h-5 items-center rounded-full bg-blue-100 px-2.5 text-xs font-semibold text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
                                 {count || 0} registros
                             </span>
                         </h3>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">
+                        <p className="text-sm text-muted-foreground mt-1 font-medium">
                             Mostrando {(clients?.length || 0)} resultados
                         </p>
                     </div>
@@ -67,7 +67,7 @@ export async function ClientsList({ searchParams }: ClientsListProps) {
                         <div className="w-full">
                             <ClientsTable clients={clients} />
                         </div>
-                        <div className="border-t border-slate-100 dark:border-slate-800/60 p-4 sm:px-6 mt-auto bg-slate-50/30 dark:bg-slate-900/10">
+                        <div className="border-t border-border/60 p-4 sm:px-6 mt-auto bg-slate-50/30 dark:bg-slate-900/10">
                             <ClientPagination
                                 currentPage={page}
                                 totalPages={totalPages}
@@ -77,11 +77,11 @@ export async function ClientsList({ searchParams }: ClientsListProps) {
                     </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center py-24 text-center px-4">
-                        <div className="w-24 h-24 bg-slate-50 dark:bg-slate-900 rounded-[2rem] flex items-center justify-center mb-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(255,255,255,0.02)] border border-slate-100 dark:border-slate-800 transition-transform hover:scale-105 duration-300">
+                        <div className="w-24 h-24 bg-slate-50 dark:bg-slate-900 rounded-[2rem] flex items-center justify-center mb-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(255,255,255,0.02)] border border-border transition-transform hover:scale-105 duration-300">
                             <Users className="h-10 w-10 text-slate-400" />
                         </div>
-                        <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">Sin resultados</h3>
-                        <p className="text-slate-500 dark:text-slate-400 max-w-sm mx-auto mb-8">
+                        <h3 className="text-xl font-bold text-foreground mb-2">Sin resultados</h3>
+                        <p className="text-muted-foreground max-w-sm mx-auto mb-8">
                             {searchParams.search || searchParams.status || searchParams.type
                                 ? 'No se encontraron clientes con los filtros aplicados. Intenta con otra búsqueda.'
                                 : 'Aún no hay clientes registrados en el sistema. Comienza agregando uno.'}
@@ -106,3 +106,4 @@ export async function ClientsList({ searchParams }: ClientsListProps) {
         </div>
     )
 }
+

@@ -16,7 +16,7 @@ export default async function NewClientPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="flex items-center gap-3 pb-4 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex items-center gap-3 pb-4 border-b border-border">
         <Link href="/dashboard/clients">
           <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg">
             <ArrowLeft className="h-4 w-4" />
@@ -27,14 +27,15 @@ export default async function NewClientPage() {
           <UserPlus className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
         </div>
         <div>
-          <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Nuevo Cliente</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 hidden sm:block">Crea un nuevo perfil de cliente</p>
+          <h1 className="text-xl font-semibold text-foreground">Nuevo Cliente</h1>
+          <p className="text-sm text-muted-foreground hidden sm:block">Crea un nuevo perfil de cliente</p>
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 md:p-8">
+      <div className="bg-card rounded-xl border border-border p-6 md:p-8">
         <ClientForm />
       </div>
     </div>
   )
 }
+

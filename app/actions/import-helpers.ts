@@ -54,3 +54,4 @@ export async function getClientsByNits(nits: string[]): Promise<Record<string, C
 
     return map
 }
+

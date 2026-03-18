@@ -9,7 +9,7 @@ export default function NotesLoading() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Corporate Header */}
-      <div className="bg-white dark:bg-slate-900 border-b border-slate-200/50 dark:border-slate-800/50">
+      <div className="bg-card border-b border-slate-200/50 dark:border-slate-800/50">
         <div className="w-full px-6 py-8">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="space-y-3">
@@ -28,7 +28,7 @@ export default function NotesLoading() {
         {/* Notes Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/50 dark:border-slate-800/50 p-6 shadow-sm">
+            <div key={i} className="bg-card rounded-2xl border border-slate-200/50 dark:border-slate-800/50 p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <div className="h-8 w-16 bg-slate-200 dark:bg-slate-800 rounded"></div>
                 <div className="h-6 w-6 rounded-xl bg-slate-200 dark:bg-slate-800"></div>
@@ -47,7 +47,7 @@ export default function NotesLoading() {
         {/* Notes Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(9)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/50 dark:border-slate-800/50 shadow-sm p-6 hover:shadow-md transition-shadow">
+            <div key={i} className="bg-card rounded-xl border border-slate-200/50 dark:border-slate-800/50 shadow-sm p-6 hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="h-8 w-8 rounded-lg bg-slate-200 dark:bg-slate-800"></div>
@@ -60,7 +60,7 @@ export default function NotesLoading() {
                 <div className="h-4 w-3/4 bg-slate-200 dark:bg-slate-800 rounded"></div>
                 <div className="h-4 w-1/2 bg-slate-200 dark:bg-slate-800 rounded"></div>
               </div>
-              <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+              <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
                 <div className="flex items-center gap-2">
                   <div className="h-6 w-6 rounded-full bg-slate-200 dark:bg-slate-800"></div>
                   <div className="h-3 w-16 bg-slate-200 dark:bg-slate-800 rounded"></div>

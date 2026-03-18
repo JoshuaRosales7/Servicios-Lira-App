@@ -20,7 +20,7 @@ export function ClientPagination({ currentPage, totalPages, searchParams }: Clie
   }
 
   return (
-    <div className="px-6 py-4 border-t border-slate-200 dark:border-slate-800 bg-gradient-to-r from-slate-50/50 to-slate-100/50 dark:from-slate-800/50 dark:to-slate-900/50">
+    <div className="px-6 py-4 border-t border-border bg-gradient-to-r from-slate-50/50 to-slate-100/50 dark:from-slate-800/50 dark:to-slate-900/50">
       <Pagination>
         <PaginationContent className="gap-1">
           <PaginationItem>

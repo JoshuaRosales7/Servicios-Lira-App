@@ -31,3 +31,4 @@ export function ClientsListSkeleton() {
         </Card>
     )
 }
+

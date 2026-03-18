@@ -63,3 +63,4 @@ export function ActivityListSkeleton() {
         </div>
     )
 }
+

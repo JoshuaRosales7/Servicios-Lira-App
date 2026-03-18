@@ -172,9 +172,9 @@ const FOLDER_CONFIG: Record<string, {
   other: { 
     label: 'Otros', 
     activeText: 'text-slate-600 dark:text-slate-400', 
-    activeBorder: 'border-slate-200 dark:border-slate-800',
+    activeBorder: 'border-border',
     badgeBg: 'bg-slate-100 dark:bg-slate-500/20', 
-    badgeText: 'text-slate-700 dark:text-slate-300', 
+    badgeText: 'text-muted-foreground', 
     icon: Folder,
     cardGradient: 'from-slate-100 to-slate-50 dark:from-slate-800/40 dark:to-slate-800/20 text-slate-600 dark:text-slate-400',
   },
@@ -792,9 +792,9 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
       )}
 
       {/* Sidebar */}
-      <div className="w-64 border-r border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex flex-col shrink-0" onDragOver={onDragOver}>
+      <div className="w-64 border-r border-border bg-slate-50/50 dark:bg-slate-900/30 flex flex-col shrink-0" onDragOver={onDragOver}>
         <div className="p-5 border-b border-transparent">
-          <h3 className="font-semibold flex items-center gap-2.5 text-sm text-slate-700 dark:text-slate-300">
+          <h3 className="font-semibold flex items-center gap-2.5 text-sm text-muted-foreground">
             <Folder className="h-4 w-4 text-blue-500 fill-blue-500/20" />
             Explorador
           </h3>
@@ -810,7 +810,7 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
                   "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm transition-all text-left group",
                   isActive
                     ? `bg-white dark:bg-slate-800 font-medium shadow-[0_2px_10px_-3px_rgba(0,0,0,0.05)] border ${config.activeBorder} ${config.activeText}`
-                    : "text-slate-500 dark:text-slate-400 font-normal hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white border border-transparent"
+                    : "text-muted-foreground font-normal hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white border border-transparent"
                 )}
               >
                 <div className="flex items-center gap-3">
@@ -822,7 +822,7 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
                     "text-[10px] px-2 py-0.5 rounded-md font-semibold transition-colors",
                     isActive 
                       ? `${config.badgeBg} ${config.badgeText}` 
-                      : "bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:bg-slate-300 dark:group-hover:bg-slate-700"
+                      : "bg-slate-200 dark:bg-slate-800 text-muted-foreground group-hover:bg-slate-300 dark:group-hover:bg-slate-700"
                   )}>
                     {fileCounts[key]}
                   </span>
@@ -832,15 +832,15 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
           })}
         </div>
 
-        <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md space-y-4">
+        <div className="p-4 border-t border-border bg-white/50 dark:bg-slate-900/50 backdrop-blur-md space-y-4">
           <div className="space-y-2.5 px-1">
-            <div className="flex justify-between items-center text-xs font-semibold text-slate-500 dark:text-slate-400">
+            <div className="flex justify-between items-center text-xs font-semibold text-muted-foreground">
               <span>Almacenamiento Local</span>
-              <span className="text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md">
+              <span className="text-muted-foreground bg-muted px-1.5 py-0.5 rounded-md">
                 {formatFileSize(files.reduce((acc, f) => acc + (f.file_size || 0), 0))}
               </span>
             </div>
-            <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
+            <div className="h-2 w-full bg-muted rounded-full overflow-hidden shadow-inner">
                <div className="h-full bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full transition-all duration-1000" style={{ width: `${Math.min(100, (files.length / 50) * 100)}%` }} />
             </div>
             <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">Capacidad calculada por vista actúal</p>
@@ -859,7 +859,7 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
         onDrop={onDrop}
       >
         {/* Toolbar */}
-        <div className="h-[72px] border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 gap-4 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md sticky top-0 z-10 shrink-0">
+        <div className="h-[72px] border-b border-border flex items-center justify-between px-6 gap-4 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md sticky top-0 z-10 shrink-0">
           <div className="flex flex-col gap-1 min-w-0 flex-1">
             <div className="flex items-center text-sm font-medium overflow-hidden whitespace-nowrap mask-linear-fade">
               <button
@@ -882,7 +882,7 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
             </div>
 
             <div className="flex items-center gap-2 mt-2">
-              <div className="text-[10px] text-slate-500 font-medium bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full shrink-0">
+              <div className="text-[10px] text-slate-500 font-medium bg-muted px-2 py-0.5 rounded-full shrink-0">
                 {filteredFiles.length} elementos
               </div>
               <div className="h-3 w-px bg-slate-200 dark:bg-slate-700 mx-1 shrink-0" />
@@ -991,13 +991,13 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
             viewMode === 'grid' ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                 {[...Array(10)].map((_, i) => (
-                  <div key={i} className="aspect-square rounded-[20px] border border-slate-100 dark:border-slate-800 p-5 flex flex-col justify-between bg-slate-50/50 dark:bg-slate-900/30">
+                  <div key={i} className="aspect-square rounded-[20px] border border-border p-5 flex flex-col justify-between bg-slate-50/50 dark:bg-slate-900/30">
                     <div className="flex-1 flex items-center justify-center">
                       <Skeleton className="h-16 w-16 rounded-2xl bg-slate-200/50 dark:bg-slate-700/50" />
                     </div>
                     <div className="space-y-3 mt-4">
                       <Skeleton className="h-3 w-full bg-slate-200/50 dark:bg-slate-700/50" />
-                      <div className="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-800">
+                      <div className="flex justify-between items-center pt-2 border-t border-border">
                         <Skeleton className="h-2 w-12 bg-slate-200/50 dark:bg-slate-700/50 rounded-full" />
                         <Skeleton className="h-2 w-8 bg-slate-200/50 dark:bg-slate-700/50 rounded-full" />
                       </div>
@@ -1053,7 +1053,7 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
                             selectedDocIds.includes(file.id) ? "ring-2 ring-blue-500 bg-blue-50/50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800" :
                             isFolder 
                               ? `bg-slate-50/50 dark:bg-slate-900/30 hover:bg-white dark:hover:bg-slate-800 border-slate-200/50 dark:border-slate-800/50 hover:${activeCat.activeBorder}` 
-                              : "bg-white dark:bg-[#0f1115] hover:bg-slate-50 dark:hover:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
+                              : "bg-white dark:bg-[#0f1115] hover:bg-slate-50 dark:hover:bg-slate-900 border-border hover:border-slate-300 dark:hover:border-slate-700"
                           )}
                         >
                           <div 
@@ -1069,7 +1069,7 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
                           </div>
 
                           <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10" onClick={e => e.stopPropagation()}>
-                            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur border border-slate-200 dark:border-slate-800 rounded-lg shadow-sm">
+                            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur border border-border rounded-lg shadow-sm">
                               <DropdownActionMenu file={file} />
                             </div>
                           </div>
@@ -1087,8 +1087,8 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
                           </div>
 
                           {!isFolder && (
-                            <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium w-full pt-4 mt-2 border-t border-slate-100 dark:border-slate-800/50">
-                              <span className="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md">{formatFileSize(file.file_size)}</span>
+                            <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium w-full pt-4 mt-2 border-t border-border/50">
+                              <span className="bg-muted px-2 py-0.5 rounded-md">{formatFileSize(file.file_size)}</span>
                               <span>{file.fiscal_year || '-'}</span>
                             </div>
                           )}
@@ -1098,10 +1098,10 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
                   })}
                 </div>
               ) : (
-                <div className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm bg-white dark:bg-slate-950 mb-20">
+                <div className="border border-border rounded-2xl overflow-hidden shadow-sm bg-white dark:bg-slate-950 mb-20">
                   <Table>
-                    <TableHeader className="bg-slate-50/80 dark:bg-slate-900/50">
-                      <TableRow className="border-slate-200 dark:border-slate-800 hover:bg-transparent">
+                    <TableHeader className="bg-muted/30">
+                      <TableRow className="border-border hover:bg-transparent">
                         <TableHead className="w-[40px] px-4"></TableHead>
                         <TableHead className="w-[50%] text-slate-500 font-semibold h-10 pl-0">Nombre</TableHead>
                         <TableHead className="text-slate-500 font-semibold h-10">Fecha</TableHead>
@@ -1121,7 +1121,7 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
                           <TableRow
                             key={file.id}
                             className={cn(
-                              "group cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900/50 border-slate-100 dark:border-slate-800 transition-colors",
+                              "group cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-900/50 border-border transition-colors",
                               selectedDocIds.includes(file.id) && "bg-blue-50/50 dark:bg-blue-900/20"
                             )}
                             onClick={() => isFolder ? handleOpenFolder(file) : setPreviewFile(file)}
@@ -1147,7 +1147,7 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
                                 </div>
                               </ContextMenuWrapper>
                             </TableCell>
-                            <TableCell className="text-xs text-slate-500 dark:text-slate-400">
+                            <TableCell className="text-xs text-muted-foreground">
                               {new Date(file.created_at).toLocaleDateString()}
                             </TableCell>
                             <TableCell className="text-xs text-slate-600 dark:text-slate-400">
@@ -1172,15 +1172,15 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
               className="h-full flex flex-col items-center justify-center w-full px-4"
               onClick={() => setIsUploadOpen(true)}
             >
-              <div className="max-w-md w-full border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-[2rem] bg-gradient-to-b from-slate-50/50 to-white dark:from-slate-900/20 dark:to-slate-950 p-12 flex flex-col items-center text-center cursor-pointer hover:border-blue-400 dark:hover:border-blue-600 hover:bg-blue-50/10 dark:hover:bg-blue-900/10 transition-all group shadow-sm">
+              <div className="max-w-md w-full border-2 border-dashed border-border rounded-[2rem] bg-gradient-to-b from-slate-50/50 to-white dark:from-slate-900/20 dark:to-slate-950 p-12 flex flex-col items-center text-center cursor-pointer hover:border-blue-400 dark:hover:border-blue-600 hover:bg-blue-50/10 dark:hover:bg-blue-900/10 transition-all group shadow-sm">
                 <div className="relative mb-6">
                   <div className="absolute inset-0 bg-blue-400 blur-2xl opacity-20 group-hover:opacity-40 transition-opacity rounded-full"></div>
-                  <div className="h-24 w-24 bg-white dark:bg-slate-900 rounded-[2rem] flex items-center justify-center shadow-lg border border-slate-100 dark:border-slate-800 group-hover:-translate-y-2 transition-transform duration-500 relative z-10 rotate-3 group-hover:rotate-6">
+                  <div className="h-24 w-24 bg-card rounded-[2rem] flex items-center justify-center shadow-lg border border-border group-hover:-translate-y-2 transition-transform duration-500 relative z-10 rotate-3 group-hover:rotate-6">
                     <Upload className="h-10 w-10 text-blue-500" strokeWidth={1.5} />
                   </div>
                 </div>
                 <h3 className="font-bold text-xl text-slate-800 dark:text-slate-100 mb-2">Nada por aquí aún</h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-[280px]">
+                <p className="text-sm text-muted-foreground mb-6 max-w-[280px]">
                   {typeFilter !== 'all' 
                     ? `No hay archivos de tipo ${typeFilter === 'pdf' ? 'PDF' : typeFilter === 'image' ? 'Imagen' : 'Tabla'} en esta sección.`
                     : "Arrastra tus archivos y carpetas directamente a esta caja o haz clic para buscarlos en tu computadora."}
@@ -1518,7 +1518,7 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
             <DialogDescription>Selecciona la carpeta de destino</DialogDescription>
           </DialogHeader>
 
-          <div className="h-[300px] overflow-y-auto border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-900/30 p-2">
+          <div className="h-[300px] overflow-y-auto border border-border rounded-xl bg-slate-50/50 dark:bg-slate-900/30 p-2">
             <div className="space-y-1">
               <button
                 onClick={() => setTargetFolderId(null)}
@@ -1559,3 +1559,4 @@ export function DocumentsSection({ clientId, initialCounts = {} }: DocumentsSect
     </div>
   )
 }
+

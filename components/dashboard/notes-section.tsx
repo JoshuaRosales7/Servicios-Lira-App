@@ -329,3 +329,4 @@ export function NotesSection({ clientId, notes }: NotesSectionProps) {
     </div>
   )
 }
+

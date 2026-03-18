@@ -93,3 +93,4 @@ export function TicketList({ tickets }: TicketListProps) {
         </div>
     )
 }
+

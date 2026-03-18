@@ -173,13 +173,13 @@ export function ClientTimeline({ logs }: ClientTimelineProps) {
                                                 
                                                 {/* Audit Details (if any) */}
                                                 {changes.length > 0 && (
-                                                    <div className="mt-3 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-md overflow-hidden text-xs">
-                                                        <div className="grid grid-cols-3 bg-slate-100/50 dark:bg-slate-800/50 px-3 py-1.5 font-medium text-slate-500 dark:text-slate-400">
+                                                    <div className="mt-3 bg-slate-50 dark:bg-slate-900 border border-border rounded-md overflow-hidden text-xs">
+                                                        <div className="grid grid-cols-3 bg-slate-100/50 dark:bg-slate-800/50 px-3 py-1.5 font-medium text-muted-foreground">
                                                             <div>Campo</div>
                                                             <div>Anterior</div>
                                                             <div>Nuevo</div>
                                                         </div>
-                                                        <div className="divide-y divide-slate-100 dark:divide-slate-800">
+                                                        <div className="divide-y divide-border">
                                                             {changes.map(key => (
                                                                 <div key={key} className="grid grid-cols-3 px-3 py-2">
                                                                     <div className="font-mono text-slate-600 dark:text-slate-400">{key}</div>
@@ -229,3 +229,4 @@ export function ClientTimeline({ logs }: ClientTimelineProps) {
         </div>
     )
 }
+

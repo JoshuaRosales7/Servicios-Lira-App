@@ -60,30 +60,30 @@ export function ClientsTable({ clients }: ClientsTableProps) {
       <Table>
         <TableHeader>
           <TableRow className="border-b">
-            <TableHead className="font-semibold text-gray-900">Cliente</TableHead>
-            <TableHead className="font-semibold text-gray-900">Tipo</TableHead>
-            <TableHead className="font-semibold text-gray-900">Contacto</TableHead>
-            <TableHead className="font-semibold text-gray-900">Ubicación</TableHead>
-            <TableHead className="font-semibold text-gray-900 text-right">Estado</TableHead>
+            <TableHead className="font-semibold text-foreground">Cliente</TableHead>
+            <TableHead className="font-semibold text-foreground">Tipo</TableHead>
+            <TableHead className="font-semibold text-foreground">Contacto</TableHead>
+            <TableHead className="font-semibold text-foreground">Ubicación</TableHead>
+            <TableHead className="font-semibold text-foreground text-right" >Estado</TableHead>
             <TableHead className="w-[60px]"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {clients.map((client) => (
-            <TableRow key={client.id} className="border-b hover:bg-gray-50">
+            <TableRow key={client.id} className="border-b hover:bg-muted/50 transition-colors">
               <TableCell className="py-4">
                 <Link
                   href={`/dashboard/clients/${client.id}`}
                   className="flex items-center gap-3 group"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 font-bold text-gray-600 text-sm">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted font-bold text-muted-foreground text-sm">
                     {(client.commercial_name || client.legal_name || 'C')[0].toUpperCase()}
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-medium text-gray-900 group-hover:text-blue-600">
+                    <span className="font-medium text-foreground group-hover:text-primary transition-colors">
                       {client.commercial_name || client.legal_name}
                     </span>
-                    <span className="text-xs text-gray-500 font-mono">
+                    <span className="text-xs text-muted-foreground font-mono">
                       NIT: {client.nit || '---'}
                     </span>
                   </div>
@@ -91,14 +91,14 @@ export function ClientsTable({ clients }: ClientsTableProps) {
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
-                  <div className="text-gray-400">
+                  <div className="text-muted-foreground/70">
                     {client.person_type === 'juridica' ? (
                       <Building2 className="h-4 w-4" />
                     ) : (
                       <User className="h-4 w-4" />
                     )}
                   </div>
-                  <span className="text-sm text-gray-700">
+                  <span className="text-sm text-foreground/80">
                     {client.person_type === 'juridica' ? 'Jurídica' : 'Individual'}
                   </span>
                 </div>
@@ -106,8 +106,8 @@ export function ClientsTable({ clients }: ClientsTableProps) {
               <TableCell>
                 <div className="space-y-1">
                   {client.email && (
-                    <div className="flex items-center gap-2 text-sm text-gray-700">
-                      <Mail className="h-3.5 w-3.5 text-gray-400" />
+                    <div className="flex items-center gap-2 text-sm text-foreground/80">
+                      <Mail className="h-3.5 w-3.5 text-muted-foreground/70" />
                       <span className="truncate max-w-[180px]">{client.email}</span>
                     </div>
                   )}
@@ -124,22 +124,22 @@ export function ClientsTable({ clients }: ClientsTableProps) {
               </TableCell>
               <TableCell>
                 {client.municipality || client.department ? (
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <MapPin className="h-3.5 w-3.5 text-gray-400" />
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <MapPin className="h-3.5 w-3.5 text-muted-foreground/70" />
                     <span className="truncate max-w-[140px]">{[client.municipality, client.department].filter(Boolean).join(', ')}</span>
                   </div>
                 ) : (
-                  <span className="text-gray-400 text-xs">---</span>
+                  <span className="text-muted-foreground/50 text-xs">---</span>
                 )}
               </TableCell>
               <TableCell className="text-right">
                 <span
                   className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
                     client.fiscal_status === 'active'
-                      ? 'bg-green-100 text-green-800'
+                      ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-400'
                       : client.fiscal_status === 'inactive'
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : 'bg-gray-100 text-gray-800'
+                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/50 dark:text-amber-400'
+                        : 'bg-muted text-muted-foreground'
                   }`}
                 >
                   {client.fiscal_status === 'active' ? 'Activo' : client.fiscal_status === 'inactive' ? 'Inactivo' : client.fiscal_status}
@@ -206,3 +206,4 @@ export function ClientsTable({ clients }: ClientsTableProps) {
     </div>
   )
 }
+

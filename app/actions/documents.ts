@@ -241,3 +241,4 @@ export async function getAllDocuments({
 
     return { documents: data || [], count: count || 0 }
 }
+

@@ -76,14 +76,14 @@ export default async function FiscalPage({
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-emerald-50 dark:bg-emerald-950 rounded-lg">
             <Receipt className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
           </div>
           <div>
-            <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Cumplimiento Fiscal</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Gestión de obligaciones tributarias y regímenes.</p>
+            <h1 className="text-xl font-semibold text-foreground">Cumplimiento Fiscal</h1>
+            <p className="text-sm text-muted-foreground">Gestión de obligaciones tributarias y regímenes.</p>
           </div>
         </div>
         <ExportButton data={exportData} filename="reporte-fiscal" label="Exportar CSV" />
@@ -91,47 +91,47 @@ export default async function FiscalPage({
 
       <div className="grid gap-4 sm:grid-cols-3">
         {stats.map((stat) => (
-          <div key={stat.name} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+          <div key={stat.name} className="bg-card rounded-xl border border-border p-5">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">{stat.name}</span>
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{stat.name}</span>
               <div className={cn("p-2 rounded-lg", stat.bg)}>
                 <stat.Icon className={cn("w-4 h-4", stat.color)} />
               </div>
             </div>
-            <p className="text-2xl font-bold text-slate-900 dark:text-white">{stat.value}</p>
+            <p className="text-2xl font-bold text-foreground">{stat.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4">
+      <div className="bg-card rounded-xl border border-border p-4">
         <FiscalSearch />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800">
-              <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Directorio de Contribuyentes</h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Control de regímenes y frecuencias de declaración.</p>
+          <div className="bg-card rounded-xl border border-border overflow-hidden">
+            <div className="px-6 py-4 border-b border-border">
+              <h2 className="text-sm font-semibold text-foreground">Directorio de Contribuyentes</h2>
+              <p className="text-xs text-muted-foreground mt-0.5">Control de regímenes y frecuencias de declaración.</p>
             </div>
             {displayingClients.length > 0 ? (
-              <div className="divide-y divide-slate-100 dark:divide-slate-800">
+              <div className="divide-y divide-border">
                 {displayingClients.map((client) => (
                   <Link key={client.id} href={`/dashboard/clients/${client.id}`}
                     className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-3.5 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
                     <div className="flex items-center gap-3">
-                      <div className="h-9 w-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 font-medium text-sm">
+                      <div className="h-9 w-9 rounded-lg bg-muted flex items-center justify-center text-slate-600 dark:text-slate-400 font-medium text-sm">
                         {(client.commercial_name || client.legal_name || 'C')[0].toUpperCase()}
                       </div>
                       <div>
-                        <p className="font-medium text-sm text-slate-900 dark:text-white">{client.commercial_name || client.legal_name}</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">NIT: {client.nit}</p>
+                        <p className="font-medium text-sm text-foreground">{client.commercial_name || client.legal_name}</p>
+                        <p className="text-xs text-muted-foreground">NIT: {client.nit}</p>
                       </div>
                     </div>
                     <div className="mt-2 sm:mt-0 flex items-center gap-3">
                       {client.fiscal_data ? (
                         <div className="text-right">
-                          <p className="text-sm font-medium text-slate-900 dark:text-white">
+                          <p className="text-sm font-medium text-foreground">
                             {regimeLabels[client.fiscal_data.tax_regime] || client.fiscal_data.tax_regime || 'Sin régimen'}
                           </p>
                           <p className="text-xs text-slate-500 flex items-center justify-end gap-1">
@@ -158,26 +158,26 @@ export default async function FiscalPage({
         </div>
 
         <div>
-          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-            <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-800">
-              <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Resumen de Estado</h2>
+          <div className="bg-card rounded-xl border border-border overflow-hidden">
+            <div className="px-5 py-3.5 border-b border-border">
+              <h2 className="text-sm font-semibold text-foreground">Resumen de Estado</h2>
             </div>
             <div className="p-5 space-y-4">
               <div>
                 <div className="flex items-center justify-between text-sm mb-1.5">
                   <span className="text-slate-500">Completo</span>
-                  <span className="font-semibold text-slate-900 dark:text-white">{clientsWithFiscal.length}</span>
+                  <span className="font-semibold text-foreground">{clientsWithFiscal.length}</span>
                 </div>
-                <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                   <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${completePct}%` }} />
                 </div>
               </div>
               <div>
                 <div className="flex items-center justify-between text-sm mb-1.5">
                   <span className="text-slate-500">Pendiente</span>
-                  <span className="font-semibold text-slate-900 dark:text-white">{clientsWithoutFiscal.length}</span>
+                  <span className="font-semibold text-foreground">{clientsWithoutFiscal.length}</span>
                 </div>
-                <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                   <div className="h-full bg-amber-500 rounded-full" style={{ width: `${100 - completePct}%` }} />
                 </div>
               </div>
@@ -188,3 +188,4 @@ export default async function FiscalPage({
     </div>
   )
 }
+

@@ -42,14 +42,14 @@ export default async function DocumentsPage(props: {
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-blue-50 dark:bg-blue-950 rounded-lg">
             <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
           </div>
           <div>
-            <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Gestión Documental</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Bóveda digital de expedientes e informes.</p>
+            <h1 className="text-xl font-semibold text-foreground">Gestión Documental</h1>
+            <p className="text-sm text-muted-foreground">Bóveda digital de expedientes e informes.</p>
           </div>
         </div>
         <Link href="/dashboard/import">
@@ -61,32 +61,32 @@ export default async function DocumentsPage(props: {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {statCards.map((stat, i) => (
-          <div key={i} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+          <div key={i} className="bg-card rounded-xl border border-border p-5">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">{stat.label}</span>
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{stat.label}</span>
               <div className={cn("p-2 rounded-lg", stat.bg)}>
                 <stat.Icon className={cn("w-4 h-4", stat.color)} />
               </div>
             </div>
-            <p className="text-2xl font-bold text-slate-900 dark:text-white">{stat.value}</p>
+            <p className="text-2xl font-bold text-foreground">{stat.value}</p>
           </div>
         ))}
       </div>
 
       <div className="grid gap-3 grid-cols-2 sm:grid-cols-5">
         {categoryStats.map((stat) => (
-          <div key={stat.name} className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-3 text-center">
+          <div key={stat.name} className="bg-card rounded-lg border border-border p-3 text-center">
             <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider mb-1">{categoryNames[stat.name]}</p>
-            <p className="text-lg font-bold text-slate-900 dark:text-white">{stat.count}</p>
+            <p className="text-lg font-bold text-foreground">{stat.count}</p>
           </div>
         ))}
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4">
+      <div className="bg-card rounded-xl border border-border p-4">
         <DocumentFilters />
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+      <div className="bg-card rounded-xl border border-border overflow-hidden">
         <Suspense fallback={<DocumentsListSkeleton />} key={JSON.stringify(searchParams)}>
           <DocumentsList searchParams={searchParams} />
         </Suspense>
@@ -94,3 +94,4 @@ export default async function DocumentsPage(props: {
     </div>
   )
 }
+

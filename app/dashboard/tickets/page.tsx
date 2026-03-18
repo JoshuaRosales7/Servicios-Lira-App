@@ -34,14 +34,14 @@ export default async function TicketsPage() {
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-orange-50 dark:bg-orange-950 rounded-lg">
                         <TicketIcon className="h-5 w-5 text-orange-600 dark:text-orange-400" />
                     </div>
                     <div>
-                        <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Centro de Solicitudes</h1>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">Gestiona requerimientos y comunicación con el equipo.</p>
+                        <h1 className="text-xl font-semibold text-foreground">Centro de Solicitudes</h1>
+                        <p className="text-sm text-muted-foreground">Gestiona requerimientos y comunicación con el equipo.</p>
                     </div>
                 </div>
                 <CreateTicketDialog />
@@ -49,32 +49,32 @@ export default async function TicketsPage() {
 
             {/* Stats */}
             <div className="grid gap-4 sm:grid-cols-2">
-                <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
-                    <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Activas</p>
-                    <p className="text-2xl font-bold text-slate-900 dark:text-white">{activeTickets.length}</p>
+                <div className="bg-card rounded-xl border border-border p-5">
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">Activas</p>
+                    <p className="text-2xl font-bold text-foreground">{activeTickets.length}</p>
                 </div>
-                <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
-                    <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Resueltas</p>
-                    <p className="text-2xl font-bold text-slate-900 dark:text-white">{closedTickets.length}</p>
+                <div className="bg-card rounded-xl border border-border p-5">
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">Resueltas</p>
+                    <p className="text-2xl font-bold text-foreground">{closedTickets.length}</p>
                 </div>
             </div>
 
             {/* Content */}
-            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+            <div className="bg-card rounded-xl border border-border overflow-hidden">
                 <Tabs defaultValue="active" className="w-full">
-                    <div className="px-6 border-b border-slate-100 dark:border-slate-800">
+                    <div className="px-6 border-b border-border">
                         <TabsList className="bg-transparent h-12 gap-6 p-0">
                             <TabsTrigger value="active"
-                                className="h-12 rounded-none border-b-2 border-transparent bg-transparent px-0 text-sm font-medium text-slate-500 shadow-none data-[state=active]:border-blue-600 data-[state=active]:text-slate-900 dark:data-[state=active]:text-white">
+                                className="h-12 rounded-none border-b-2 border-transparent bg-transparent px-0 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:border-primary data-[state=active]:text-foreground">
                                 Activas
                                 {activeTickets.length > 0 && (
-                                    <span className="ml-2 bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-400 text-[10px] px-1.5 py-0.5 rounded font-semibold">
+                                    <span className="ml-2 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 text-[10px] px-1.5 py-0.5 rounded font-semibold">
                                         {activeTickets.length}
                                     </span>
                                 )}
                             </TabsTrigger>
                             <TabsTrigger value="closed"
-                                className="h-12 rounded-none border-b-2 border-transparent bg-transparent px-0 text-sm font-medium text-slate-500 shadow-none data-[state=active]:border-blue-600 data-[state=active]:text-slate-900 dark:data-[state=active]:text-white">
+                                className="h-12 rounded-none border-b-2 border-transparent bg-transparent px-0 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:border-primary data-[state=active]:text-foreground">
                                 Historial
                             </TabsTrigger>
                         </TabsList>
@@ -88,3 +88,4 @@ export default async function TicketsPage() {
         </div>
     )
 }
+

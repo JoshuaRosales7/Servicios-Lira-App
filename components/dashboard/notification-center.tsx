@@ -22,6 +22,11 @@ export function NotificationCenter() {
     const [notifications, setNotifications] = useState<Notification[]>([])
     const [unreadCount, setUnreadCount] = useState(0)
     const [isOpen, setIsOpen] = useState(false)
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
 
     const fetchData = async () => {
         try {
@@ -78,6 +83,12 @@ export function NotificationCenter() {
             default: return <Info className="h-4 w-4 text-blue-500" />
         }
     }
+
+    if (!mounted) return (
+        <Button variant="ghost" size="icon" className="relative">
+            <Bell className="h-5 w-5 text-muted-foreground" />
+        </Button>
+    )
 
     return (
         <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
@@ -170,3 +181,4 @@ export function NotificationCenter() {
         </DropdownMenu>
     )
 }
+

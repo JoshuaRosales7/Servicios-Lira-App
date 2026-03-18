@@ -77,7 +77,7 @@ export function CorporatePageLoader({ message = 'Cargando...' }: { message?: str
       </div>
       <div className="text-center space-y-2">
         <p className="text-lg font-medium text-slate-900 dark:text-slate-100">{message}</p>
-        <p className="text-sm text-slate-500 dark:text-slate-400">Por favor espera un momento</p>
+        <p className="text-sm text-muted-foreground">Por favor espera un momento</p>
       </div>
     </div>
   )
@@ -92,7 +92,7 @@ export function CorporateSkeletonLoader({
 }) {
   if (variant === 'card') {
     return (
-      <div className={cn('bg-white dark:bg-slate-900 rounded-xl border border-slate-200/50 dark:border-slate-800/50 p-6 shadow-sm animate-pulse', className)}>
+      <div className={cn('bg-card rounded-xl border border-slate-200/50 dark:border-slate-800/50 p-6 shadow-sm animate-pulse', className)}>
         <div className="space-y-4">
           <div className="flex items-center gap-4">
             <div className="h-12 w-12 bg-slate-200 dark:bg-slate-800 rounded-lg"></div>
@@ -114,7 +114,7 @@ export function CorporateSkeletonLoader({
     return (
       <div className={cn('space-y-3 animate-pulse', className)}>
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="flex items-center gap-4 p-4 bg-white dark:bg-slate-900 rounded-lg border border-slate-200/50 dark:border-slate-800/50">
+          <div key={i} className="flex items-center gap-4 p-4 bg-card rounded-lg border border-slate-200/50 dark:border-slate-800/50">
             <div className="h-10 w-10 bg-slate-200 dark:bg-slate-800 rounded"></div>
             <div className="flex-1 space-y-2">
               <div className="h-4 w-3/4 bg-slate-200 dark:bg-slate-800 rounded"></div>
@@ -129,8 +129,8 @@ export function CorporateSkeletonLoader({
 
   // table variant
   return (
-    <div className={cn('bg-white dark:bg-slate-900 rounded-xl border border-slate-200/50 dark:border-slate-800/50 shadow-sm animate-pulse', className)}>
-      <div className="border-b border-slate-200 dark:border-slate-800 p-4">
+    <div className={cn('bg-card rounded-xl border border-slate-200/50 dark:border-slate-800/50 shadow-sm animate-pulse', className)}>
+      <div className="border-b border-border p-4">
         <div className="grid grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="h-4 w-20 bg-slate-200 dark:bg-slate-800 rounded"></div>
@@ -139,7 +139,7 @@ export function CorporateSkeletonLoader({
       </div>
       <div className="p-0">
         {[...Array(6)].map((_, i) => (
-          <div key={i} className="grid grid-cols-4 gap-4 p-4 border-b border-slate-200 dark:border-slate-800 last:border-0">
+          <div key={i} className="grid grid-cols-4 gap-4 p-4 border-b border-border last:border-0">
             {[...Array(4)].map((_, j) => (
               <div key={j} className="h-4 w-full bg-slate-200 dark:bg-slate-800 rounded"></div>
             ))}

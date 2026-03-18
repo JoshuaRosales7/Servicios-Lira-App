@@ -58,6 +58,7 @@ export async function updateFiscalData(clientId: string, data: any) {
     return result.data
 }
 
+
 // --- Legal Data ---
 
 export async function updateLegalData(clientId: string, data: any) {
@@ -99,13 +100,27 @@ export async function updateLegalData(clientId: string, data: any) {
 export async function updateAccountingData(clientId: string, data: any) {
     const supabase = await createClient()
 
-    const { data: existing } = await supabase.from('accounting_data').select('id').eq('client_id', clientId).maybeSingle()
+    const { data: existing } = await supabase
+        .from('accounting_data')
+        .select('id')
+        .eq('client_id', clientId)
+        .eq('fiscal_year', data.fiscal_year)
+        .maybeSingle()
 
     let result
     if (existing) {
-        result = await supabase.from('accounting_data').update(data).eq('client_id', clientId).select().single()
+        result = await supabase
+            .from('accounting_data')
+            .update(data)
+            .eq('id', existing.id)
+            .select()
+            .single()
     } else {
-        result = await supabase.from('accounting_data').insert({ ...data, client_id: clientId }).select().single()
+        result = await supabase
+            .from('accounting_data')
+            .insert({ ...data, client_id: clientId })
+            .select()
+            .single()
     }
 
     if (result.error) {
@@ -244,3 +259,4 @@ export async function togglePinNote(id: string, isPinned: boolean, clientId: str
     revalidatePath(`/dashboard/clients/${clientId}`)
     return true
 }
+

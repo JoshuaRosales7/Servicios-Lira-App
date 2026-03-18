@@ -135,12 +135,12 @@ export function FiscalDataForm({ clientId, fiscalData }: FiscalDataFormProps) {
 
         <div className="grid gap-6 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="sat_user">Usuario Agencia Virtual</Label>
+            <Label htmlFor="sat_user">Contraseña Agencia Virtual</Label>
             <Input
               id="sat_user"
               value={formData.sat_user}
               onChange={(e) => handleChange('sat_user', e.target.value)}
-              placeholder="Nombre de usuario SAT"
+              placeholder="Contraseña Agencia Virtual"
             />
           </div>
           <div className="space-y-2">
@@ -184,3 +184,4 @@ export function FiscalDataForm({ clientId, fiscalData }: FiscalDataFormProps) {
     </form>
   )
 }
+

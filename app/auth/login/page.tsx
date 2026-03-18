@@ -106,7 +106,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4">
-      <Card className="w-full max-w-md shadow-sm border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+      <Card className="w-full max-w-md shadow-sm border-border rounded-xl overflow-hidden">
         <CardHeader className="text-center space-y-4 pt-8 pb-2">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600">
             <Calculator className="h-6 w-6 text-white" />
@@ -236,3 +236,4 @@ export default function LoginPage() {
     </div>
   )
 }
+

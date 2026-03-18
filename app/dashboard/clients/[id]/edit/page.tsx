@@ -34,20 +34,20 @@ export default async function EditClientPage({ params }: { params: Promise<{ id:
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex items-center justify-between pb-4 border-b border-border">
         <div className="flex items-center gap-3">
           <Link href={`/dashboard/clients/${id}`}>
             <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg">
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
-          <div className="h-5 w-px bg-slate-200 dark:bg-slate-800" />
+          <div className="h-5 w-px bg-border" />
           <div className="p-2 bg-indigo-50 dark:bg-indigo-950 rounded-lg">
             <Edit className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
           </div>
           <div>
-            <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Editar Cliente</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400 hidden sm:block">
+            <h1 className="text-xl font-semibold text-foreground">Editar Cliente</h1>
+            <p className="text-sm text-muted-foreground hidden sm:block">
               {client.commercial_name || client.legal_name}
             </p>
           </div>
@@ -60,10 +60,10 @@ export default async function EditClientPage({ params }: { params: Promise<{ id:
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Sidebar — Client Summary */}
         <div className="lg:col-span-1 space-y-4">
-          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-            <div className="h-16 bg-slate-100 dark:bg-slate-800 relative">
+          <div className="bg-card rounded-xl border border-border overflow-hidden">
+            <div className="h-16 bg-muted/50 relative">
               <div className="absolute -bottom-6 left-4">
-                <div className="h-12 w-12 rounded-lg bg-white dark:bg-slate-900 border-2 border-white dark:border-slate-900 shadow flex items-center justify-center">
+                <div className="h-12 w-12 rounded-lg bg-card border-2 border-card shadow flex items-center justify-center">
                   {client.person_type === 'juridica' ? (
                     <Building2 className="h-5 w-5 text-slate-400" />
                   ) : (
@@ -74,37 +74,37 @@ export default async function EditClientPage({ params }: { params: Promise<{ id:
             </div>
             <div className="px-4 pt-10 pb-4 space-y-3">
               <div>
-                <p className="font-medium text-sm text-slate-900 dark:text-white">{client.commercial_name || client.legal_name}</p>
-                <p className="text-xs text-slate-500 font-mono mt-0.5">NIT: {client.nit}</p>
+                <p className="font-medium text-sm text-foreground">{client.commercial_name || client.legal_name}</p>
+                <p className="text-xs text-muted-foreground font-mono mt-0.5">NIT: {client.nit}</p>
               </div>
 
               <div className="flex items-center gap-2">
                 <span className={cn(
                   "text-[10px] px-2 py-0.5 rounded-md font-semibold",
                   client.fiscal_status === 'active'
-                    ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400"
-                    : "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-400"
+                    ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400"
+                    : "bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400"
                 )}>
                   {client.fiscal_status === 'active' ? 'Activo' : client.fiscal_status === 'suspended' ? 'Suspendido' : 'Inactivo'}
                 </span>
-                <span className="text-[10px] px-2 py-0.5 rounded-md bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-medium capitalize">
+                <span className="text-[10px] px-2 py-0.5 rounded-md bg-muted text-muted-foreground font-medium capitalize">
                   {client.person_type === 'juridica' ? 'Jurídica' : 'Individual'}
                 </span>
               </div>
 
               {infoItems.length > 0 && (
-                <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                <div className="pt-3 border-t border-border/80 space-y-2">
                   {infoItems.map((item, i) => (
-                    <div key={i} className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                      <item.icon className="h-3 w-3 text-slate-400 shrink-0" />
+                    <div key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <item.icon className="h-3 w-3 text-muted-foreground/60 shrink-0" />
                       <span className="truncate">{item.value}</span>
                     </div>
                   ))}
                 </div>
               )}
 
-              <div className="pt-3 border-t border-slate-100 dark:border-slate-800">
-                <div className="flex items-center gap-1.5 text-xs text-slate-400">
+              <div className="pt-3 border-t border-border/80">
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground/60">
                   <Calendar className="h-3 w-3" />
                   <span>Registrado {new Date(client.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                 </div>
@@ -122,7 +122,7 @@ export default async function EditClientPage({ params }: { params: Promise<{ id:
 
         {/* Form */}
         <div className="lg:col-span-3">
-          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 md:p-8">
+          <div className="bg-card rounded-xl border border-border p-6 md:p-8">
             <ClientForm client={client} />
           </div>
         </div>

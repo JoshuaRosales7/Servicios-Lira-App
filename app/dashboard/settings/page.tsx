@@ -258,14 +258,14 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-blue-50 dark:bg-blue-950 rounded-lg">
             <Settings className="h-5 w-5 text-blue-600 dark:text-blue-400" />
           </div>
           <div>
-            <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Configuración</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Administra tu cuenta y preferencias.</p>
+            <h1 className="text-xl font-semibold text-foreground">Configuración</h1>
+            <p className="text-sm text-muted-foreground">Administra tu cuenta y preferencias.</p>
           </div>
         </div>
         <Button variant="ghost" size="sm" onClick={handleSignOut} className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950">
@@ -274,24 +274,24 @@ export default function SettingsPage() {
       </div>
 
       <Tabs defaultValue="profile" className="w-full">
-        <TabsList className="bg-transparent border-b border-slate-200 dark:border-slate-800 w-full justify-start rounded-none h-auto p-0 mb-6 space-x-6">
-          <TabsTrigger value="profile" className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent px-1 pb-4 font-medium transition-none">
+        <TabsList className="bg-transparent border-b border-border w-full justify-start rounded-none h-auto p-0 mb-6 space-x-6">
+          <TabsTrigger value="profile" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-1 pb-4 font-medium transition-none">
             Perfil
           </TabsTrigger>
-          <TabsTrigger value="appearance" className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent px-1 pb-4 font-medium transition-none">
+          <TabsTrigger value="appearance" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-1 pb-4 font-medium transition-none">
             Apariencia
           </TabsTrigger>
-          <TabsTrigger value="notifications" className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent px-1 pb-4 font-medium transition-none">
+          <TabsTrigger value="notifications" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-1 pb-4 font-medium transition-none">
             Notificaciones
           </TabsTrigger>
-          <TabsTrigger value="security" className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent px-1 pb-4 font-medium transition-none">
+          <TabsTrigger value="security" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-1 pb-4 font-medium transition-none">
             Seguridad
           </TabsTrigger>
         </TabsList>
 
         {/* Profile Tab */}
         <TabsContent value="profile" className="mt-0 space-y-6">
-          <Card className="rounded-xl border-slate-200 dark:border-slate-800 shadow-sm">
+          <Card className="rounded-xl border-border shadow-sm">
             <CardHeader className="pb-4">
               <CardTitle className="text-lg">Información Personal</CardTitle>
               <CardDescription>Configura tus datos de contacto.</CardDescription>
@@ -299,15 +299,15 @@ export default function SettingsPage() {
             <CardContent>
               <form onSubmit={handleProfileSubmit} className="space-y-6">
                 <div className="flex items-center gap-4 mb-6">
-                  <Avatar className="h-16 w-16 border border-slate-200 dark:border-slate-800">
+                  <Avatar className="h-16 w-16 border border-border">
                     <AvatarImage src={`https://avatar.vercel.sh/${user?.email}`} />
-                    <AvatarFallback className="bg-slate-100 text-slate-600 uppercase">
+                    <AvatarFallback className="bg-muted text-muted-foreground uppercase">
                       {formData.full_name?.[0] || user?.email?.[0]}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-medium text-slate-900 dark:text-white">{formData.full_name || 'Sin nombre'}</p>
-                    <p className="text-sm text-slate-500 capitalize">{formData.role}</p>
+                    <p className="font-medium text-foreground">{formData.full_name || 'Sin nombre'}</p>
+                    <p className="text-sm text-muted-foreground capitalize">{formData.role}</p>
                   </div>
                 </div>
 
@@ -323,7 +323,7 @@ export default function SettingsPage() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Correo Electrónico</Label>
-                    <Input id="email" value={formData.email} disabled className="bg-slate-50 dark:bg-slate-900 rounded-lg h-10 opacity-70" />
+                    <Input id="email" value={formData.email} disabled className="bg-muted/50 rounded-lg h-10 opacity-70" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="phone">Teléfono</Label>
@@ -337,7 +337,7 @@ export default function SettingsPage() {
                   </div>
                   <div className="space-y-2">
                     <Label>Rol de Usuario</Label>
-                    <div className="h-10 px-3 flex items-center bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-sm capitalize">
+                    <div className="h-10 px-3 flex items-center bg-muted/50 border border-border rounded-lg text-sm capitalize">
                       {formData.role}
                     </div>
                   </div>
@@ -355,7 +355,7 @@ export default function SettingsPage() {
 
         {/* Appearance Tab */}
         <TabsContent value="appearance" className="mt-0 space-y-6">
-          <Card className="rounded-xl border-slate-200 dark:border-slate-800 shadow-sm">
+          <Card className="rounded-xl border-border shadow-sm">
             <CardHeader>
               <CardTitle className="text-lg">Tema del Sistema</CardTitle>
               <CardDescription>Personaliza visualmente el panel.</CardDescription>
@@ -373,11 +373,11 @@ export default function SettingsPage() {
                     className={cn(
                       "flex flex-col items-center justify-center gap-3 p-6 rounded-xl border-2 transition-all",
                       theme === item.id 
-                        ? "border-blue-600 bg-blue-50/50 dark:bg-blue-900/20" 
-                        : "border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900"
+                        ? "border-primary bg-primary/5" 
+                        : "border-border hover:bg-muted/50"
                     )}
                   >
-                    <item.icon className={cn("h-6 w-6", theme === item.id ? "text-blue-600" : "text-slate-400")} />
+                    <item.icon className={cn("h-6 w-6", theme === item.id ? "text-primary" : "text-muted-foreground/50")} />
                     <span className="text-sm font-medium">{item.label}</span>
                   </button>
                 ))}
@@ -388,7 +388,7 @@ export default function SettingsPage() {
 
         {/* Notifications Tab */}
         <TabsContent value="notifications" className="mt-0">
-          <Card className="rounded-xl border-slate-200 dark:border-slate-800 shadow-sm">
+          <Card className="rounded-xl border-border shadow-sm">
             <CardHeader>
               <CardTitle className="text-lg">Preferencias de Alerta</CardTitle>
               <CardDescription>Controla qué avisos quieres recibir.</CardDescription>
@@ -397,7 +397,7 @@ export default function SettingsPage() {
               <div className="flex items-center justify-between py-2">
                 <div className="space-y-0.5">
                   <p className="text-sm font-medium">Reportes Semanales</p>
-                  <p className="text-xs text-slate-500">Recibe un resumen de actividad por email.</p>
+                  <p className="text-xs text-muted-foreground">Recibe un resumen de actividad por email.</p>
                 </div>
                 <Switch 
                   checked={notifications.email_reports} 
@@ -408,7 +408,7 @@ export default function SettingsPage() {
               <div className="flex items-center justify-between py-2">
                 <div className="space-y-0.5">
                   <p className="text-sm font-medium">Alertas Fiscales</p>
-                  <p className="text-xs text-slate-500">Notificaciones críticas sobre vencimientos.</p>
+                  <p className="text-xs text-muted-foreground">Notificaciones críticas sobre vencimientos.</p>
                 </div>
                 <Switch 
                   checked={notifications.email_alerts} 
@@ -419,7 +419,7 @@ export default function SettingsPage() {
               <div className="flex items-center justify-between py-2">
                 <div className="space-y-0.5">
                   <p className="text-sm font-medium">Carga de Documentos</p>
-                  <p className="text-xs text-slate-500">Aviso cuando se suben nuevos archivos.</p>
+                  <p className="text-xs text-muted-foreground">Aviso cuando se suben nuevos archivos.</p>
                 </div>
                 <Switch 
                   checked={notifications.push_documents} 
@@ -433,7 +433,7 @@ export default function SettingsPage() {
         {/* Security Tab */}
         <TabsContent value="security" className="mt-0">
           <div className="grid gap-6">
-            <Card className="rounded-xl border-slate-200 dark:border-slate-800 shadow-sm">
+            <Card className="rounded-xl border-border shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg">Seguridad de Acceso</CardTitle>
                 <CardDescription>Cambia tu contraseña y protege tu cuenta.</CardDescription>
@@ -441,12 +441,12 @@ export default function SettingsPage() {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg">
-                      <Key className="h-4 w-4 text-slate-600" />
+                    <div className="p-2 bg-muted rounded-lg">
+                      <Key className="h-4 w-4 text-muted-foreground" />
                     </div>
                     <div>
                       <p className="text-sm font-medium">Contraseña</p>
-                      <p className="text-xs text-slate-500">Cambia tu clave periódicamente.</p>
+                      <p className="text-xs text-muted-foreground">Cambia tu clave periódicamente.</p>
                     </div>
                   </div>
                   <Dialog>
@@ -497,12 +497,12 @@ export default function SettingsPage() {
                 <Separator />
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg">
-                      <Smartphone className="h-4 w-4 text-slate-600" />
+                    <div className="p-2 bg-muted rounded-lg">
+                      <Smartphone className="h-4 w-4 text-muted-foreground" />
                     </div>
                     <div>
                       <p className="text-sm font-medium">Autenticación 2FA</p>
-                      <p className="text-xs text-slate-500">Capa extra de seguridad.</p>
+                      <p className="text-xs text-muted-foreground">Capa extra de seguridad.</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -563,8 +563,8 @@ export default function SettingsPage() {
                                 <img src={mfaData.qr_code} alt="QR Code" className="w-40 h-40" />
                               </div>
                               <div className="text-center space-y-1">
-                                <p className="text-[10px] font-mono text-slate-500 uppercase">Clave Secreta</p>
-                                <p className="text-xs font-mono font-bold break-all bg-slate-50 p-2 rounded border">
+                                <p className="text-[10px] font-mono text-muted-foreground uppercase">Clave Secreta</p>
+                                <p className="text-xs font-mono font-bold break-all bg-muted/50 p-2 rounded border">
                                   {mfaData.secret}
                                 </p>
                               </div>
@@ -604,7 +604,7 @@ export default function SettingsPage() {
                 <CardTitle className="text-base text-red-600 dark:text-red-400">Zona de Peligro</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-xs text-slate-500 mb-4">La eliminación de la cuenta es permanente y no se puede deshacer.</p>
+                <p className="text-xs text-muted-foreground mb-4">La eliminación de la cuenta es permanente y no se puede deshacer.</p>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="destructive" size="sm" className="rounded-lg h-9 font-medium">
@@ -634,3 +634,4 @@ export default function SettingsPage() {
     </div>
   )
 }
+

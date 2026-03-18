@@ -369,3 +369,4 @@ export function BankingDataSection({ clientId, bankingData }: BankingDataSection
     </div>
   )
 }
+

@@ -129,3 +129,4 @@ export function TopBar({ isAdmin = false }: { isAdmin?: boolean }) {
         </header>
     )
 }
+

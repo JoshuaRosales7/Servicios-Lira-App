@@ -54,13 +54,13 @@ export function ClientSearch() {
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
         <Input
           placeholder="Buscar por nombre, NIT, email..."
-          className="pl-10 h-11 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900"
+          className="pl-10 h-11 border-border bg-card"
           value={term}
           onChange={(e) => setTerm(e.target.value)}
         />
       </div>
       <Select value={status} onValueChange={setStatus}>
-        <SelectTrigger className="w-full sm:w-44 h-11 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <SelectTrigger className="w-full sm:w-44 h-11 border-border bg-card">
           <SelectValue placeholder="Estado fiscal" />
         </SelectTrigger>
         <SelectContent>
@@ -71,7 +71,7 @@ export function ClientSearch() {
         </SelectContent>
       </Select>
       <Select value={type} onValueChange={setType}>
-        <SelectTrigger className="w-full sm:w-44 h-11 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <SelectTrigger className="w-full sm:w-44 h-11 border-border bg-card">
           <SelectValue placeholder="Tipo de persona" />
         </SelectTrigger>
         <SelectContent>
@@ -85,7 +85,7 @@ export function ClientSearch() {
           variant="outline"
           size="sm"
           onClick={clearFilters}
-          className="h-11 px-4 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800"
+          className="h-11 px-4 border-border hover:bg-slate-50 dark:hover:bg-slate-800"
         >
           <X className="h-4 w-4 mr-2" />
           Limpiar
@@ -94,3 +94,4 @@ export function ClientSearch() {
     </div>
   )
 }
+

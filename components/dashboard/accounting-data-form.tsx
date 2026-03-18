@@ -177,3 +177,4 @@ export function AccountingDataForm({ clientId, accountingData }: AccountingDataF
     </form>
   )
 }
+

@@ -149,3 +149,47 @@ export async function revokeClientAccess(clientId: string, userId: string) {
         return { success: false, error: error.message }
     }
 }
+
+export async function createAccessForExistingClient(clientId: string, email: string, password: string) {
+    const supabaseAdmin = createAdminClient()
+
+    try {
+        // 1. Create the user in Supabase Auth
+        const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.createUser({
+            email,
+            password,
+            email_confirm: true
+        })
+
+        if (authError) throw authError
+        const user_id = authUser.user.id
+
+        // 2. Profile role
+        const { error: profileError } = await supabaseAdmin
+            .from('profiles')
+            .update({ role: 'client' })
+            .eq('id', user_id)
+
+        if (profileError) throw profileError
+
+        // 3. Link to client
+        const { error: clientError } = await supabaseAdmin
+            .from('clients')
+            .update({ user_id })
+            .eq('id', clientId)
+
+        if (clientError) throw clientError
+
+        // Log and Notify
+        await logActivity('CREATE_ACCESS', 'client', clientId, { user_id, email })
+        await notifyAdmins('Acceso Habilitado', `Se habilitó el acceso para el cliente ${clientId}`, 'success')
+
+        revalidatePath(`/dashboard/clients/${clientId}`)
+        return { success: true }
+
+    } catch (error: any) {
+        console.error('Error creating access:', error)
+        return { success: false, error: error.message }
+    }
+}
+

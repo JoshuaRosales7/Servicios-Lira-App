@@ -224,3 +224,4 @@ export function ActivityFeed({ logs }: ActivityFeedProps) {
         </div>
     )
 }
+

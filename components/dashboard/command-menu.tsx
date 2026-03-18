@@ -14,7 +14,6 @@ import {
     Sun,
     User,
     Users,
-    Scale,
     Landmark,
     UploadCloud,
     Activity
@@ -34,10 +33,12 @@ import {
 
 export function CommandMenu() {
     const [open, setOpen] = React.useState(false)
+    const [mounted, setMounted] = React.useState(false)
     const router = useRouter()
     const { setTheme } = useTheme()
 
     React.useEffect(() => {
+        setMounted(true)
         const down = (e: KeyboardEvent) => {
             if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
                 e.preventDefault()
@@ -60,6 +61,8 @@ export function CommandMenu() {
         setOpen(false)
         command()
     }, [])
+
+    if (!mounted) return null
 
     return (
         <CommandDialog open={open} onOpenChange={setOpen}>
@@ -105,12 +108,7 @@ export function CommandMenu() {
                         <FileText className="mr-2 h-4 w-4" />
                         <span>Documentos</span>
                     </CommandItem>
-                    <CommandItem
-                        onSelect={() => runCommand(() => router.push('/dashboard/legal'))}
-                    >
-                        <Scale className="mr-2 h-4 w-4" />
-                        <span>Legal y Trámites</span>
-                    </CommandItem>
+
                     <CommandItem
                         onSelect={() => runCommand(() => router.push('/dashboard/fiscal'))}
                     >
@@ -168,3 +166,4 @@ export function CommandMenu() {
         </CommandDialog>
     )
 }
+

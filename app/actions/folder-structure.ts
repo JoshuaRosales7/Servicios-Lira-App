@@ -3,7 +3,13 @@
 import { createClient } from '@/lib/supabase/server'
 import { createFolder } from '@/app/actions/documents'
 
-export async function ensureClientFolderStructure(clientId: string, year: number, monthName: string): Promise<string | null> {
+export async function ensureClientFolderStructure(
+    clientId: string, 
+    year: number, 
+    monthName: string,
+    typeLabel?: string,
+    formCode?: string
+): Promise<string | null> {
     const supabase = await createClient()
 
     try {
@@ -87,10 +93,85 @@ export async function ensureClientFolderStructure(clientId: string, year: number
             monthFolderId = newMonthFolder.id
         }
 
-        return monthFolderId
+        if (!typeLabel) return monthFolderId
+
+        // 3. Check/Create Type Folder (inside Month Folder)
+        const { data: typeFolders } = await supabase
+            .from('documents')
+            .select('id')
+            .eq('client_id', clientId)
+            .eq('is_folder', true)
+            .eq('name', typeLabel)
+            .eq('parent_id', monthFolderId)
+            .single()
+
+        let typeFolderId = typeFolders?.id
+
+        if (!typeFolderId) {
+            const { data: newTypeFolder, error: typeError } = await supabase
+                .from('documents')
+                .insert({
+                    client_id: clientId,
+                    name: typeLabel,
+                    is_folder: true,
+                    parent_id: monthFolderId,
+                    document_type: 'other',
+                    file_size: 0,
+                    file_path: `${clientId}/${year}/${monthName}/${typeLabel}`,
+                    uploaded_by: (await supabase.auth.getUser()).data.user?.id
+                })
+                .select('id')
+                .single()
+
+            if (typeError) {
+                console.error("Error creating type folder:", typeError.message)
+                return null
+            }
+            typeFolderId = newTypeFolder.id
+        }
+
+        if (!formCode) return typeFolderId
+
+        // 4. Check/Create Form Folder (inside Type Folder)
+        const { data: formFolders } = await supabase
+            .from('documents')
+            .select('id')
+            .eq('client_id', clientId)
+            .eq('is_folder', true)
+            .eq('name', formCode)
+            .eq('parent_id', typeFolderId)
+            .single()
+
+        let formFolderId = formFolders?.id
+
+        if (!formFolderId) {
+            const { data: newFormFolder, error: formError } = await supabase
+                .from('documents')
+                .insert({
+                    client_id: clientId,
+                    name: formCode,
+                    is_folder: true,
+                    parent_id: typeFolderId,
+                    document_type: 'other',
+                    file_size: 0,
+                    file_path: `${clientId}/${year}/${monthName}/${typeLabel}/${formCode}`,
+                    uploaded_by: (await supabase.auth.getUser()).data.user?.id
+                })
+                .select('id')
+                .single()
+
+            if (formError) {
+                console.error("Error creating form folder:", formError.message)
+                return null
+            }
+            formFolderId = newFormFolder.id
+        }
+
+        return formFolderId
 
     } catch (error) {
         console.error("Ensure Folder Structure Error:", error)
         return null
     }
 }
+

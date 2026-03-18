@@ -40,6 +40,116 @@ const DOCUMENT_TYPES: Record<string, string> = {
     'patente': 'patent'
 }
 
+const DOC_TYPE_OPTIONS = [
+    { value: 'invoice', label: 'Factura' },
+    { value: 'declaration', label: 'Declaración' },
+    { value: 'receipt', label: 'Recibo' },
+    { value: 'financial_statement', label: 'Est. Financiero' },
+    { value: 'contract', label: 'Contrato' },
+    { value: 'deed', label: 'Escritura' },
+    { value: 'patent', label: 'Patente' },
+    { value: 'other', label: 'Otro' },
+]
+
+// Advanced SAT Form Code Mapping
+const SAT_CODE_MAP: Record<string, string> = {
+    // 1. IVA
+    'SAT-2237': 'declaration', // IVA General
+    'SAT-2046': 'declaration', // IVA Pequeño Contribuyente
+    'SAT-2799': 'declaration', // IVA Contratos
+    'SAT-2085': 'declaration', // IVA Facturas Especiales
+    'SAT-2241': 'declaration', // IVA Electrónico
+    'SAT-2280': 'declaration', // IVA Agropecuario
+    'SAT-2290': 'declaration', // IVA Electrónico Agropecuario
+    // 2. ISR
+    'SAT-1311': 'declaration', // ISR Opcional Mensual
+    'SAT-1321': 'declaration', // ISR Capital
+    'SAT-1361': 'declaration', // ISR Trimestral
+    'SAT-1341': 'declaration', // ISR Premios
+    'SAT-1331': 'declaration', // ISR Retenciones
+    'SAT-1352': 'declaration', // ISR No Residentes Ret.
+    'SAT-1371': 'declaration', // ISR No Residentes
+    'SAT-1411': 'declaration', // ISR Anual
+    'SAT-1431': 'declaration', // ISR Relación Dependencia
+    // 3. ISO
+    'SAT-1608': 'declaration',
+    // 4. ESPECÍFICOS & OTROS
+    'SAT-9208': 'declaration', 'SAT-6080': 'declaration', 'SAT-6090': 'declaration',
+    'SAT-9031': 'declaration', 'SAT-7130': 'declaration', 'SAT-7190': 'declaration',
+    'SAT-8480': 'declaration', 'SAT-7200': 'declaration', 'SAT-5100': 'declaration',
+    'SAT-9050': 'declaration', 'SAT-8490': 'declaration',
+    // 5. VEHÍCULOS (Usually receipts or declarations)
+    'SAT-8611': 'receipt', 'SAT-2311': 'declaration', 'SAT-4041': 'declaration',
+    'SAT-4081': 'declaration', 'SAT-4091': 'declaration', 'SAT-8620': 'receipt',
+    'SAT-8933': 'receipt', 'SAT-4121': 'receipt', 'SAT-4131': 'receipt', 'SAT-8370': 'receipt',
+    // 6. ADUANAS
+    'SAT-8540': 'receipt', 'SAT-8530': 'declaration', 'SAT-8560': 'receipt',
+    // 7. VARIOS
+    'SAT-0811': 'receipt', 'SAT-8421': 'other', 'SAT-8401': 'other',
+    'SAT-7121': 'receipt', 'SAT-0891': 'receipt', 'SAT-0850': 'receipt',
+    'SAT-9911': 'other', 'SAT-8008': 'receipt', 'SAT-8028': 'other'
+}
+
+const SAT_NAMES_MAP: Record<string, string> = {
+    // 1. IVA
+    'SAT-2237': 'IVA General',
+    'SAT-2046': 'IVA Pequeño Contribuyente',
+    'SAT-2799': 'IVA Contratos Pago Directo',
+    'SAT-2085': 'IVA Facturas Especiales',
+    'SAT-2241': 'IVA Régimen Electrónico Pequeño Contribuyente',
+    'SAT-2280': 'IVA Régimen Especial Contribuyente Agropecuario',
+    'SAT-2290': 'IVA Régimen Electrónico Especial Contribuyente Agropecuario',
+    // 2. ISR
+    'SAT-1311': 'ISR Opcional Mensual',
+    'SAT-1321': 'ISR Capital Mensual',
+    'SAT-1361': 'ISR Trimestral',
+    'SAT-1341': 'ISR sobre Premios',
+    'SAT-1331': 'ISR Retenciones',
+    'SAT-1352': 'ISR No Residentes Retenciones',
+    'SAT-1371': 'ISR No Residentes',
+    'SAT-1411': 'ISR Anual',
+    'SAT-1431': 'ISR Relación de Dependencia',
+    // 3. ISO
+    'SAT-1608': 'ISO Trimestral',
+    // 4. ESPECÍFICOS
+    'SAT-9208': 'Impuesto Cemento',
+    'SAT-6080': 'IDP Mensual',
+    'SAT-6090': 'Petróleo Anual',
+    'SAT-9031': 'Impuesto Cable',
+    'SAT-7130': 'Impuesto del Timbre',
+    'SAT-7190': 'Habilitación de Títulos',
+    'SAT-8480': 'Casquetes',
+    'SAT-7200': 'Pago Especies Tabacos',
+    'SAT-5100': 'Cigarrillos',
+    'SAT-9050': 'Recibo IUSI',
+    'SAT-8490': 'Herencias Legados Donaciones',
+    // 5. VEHÍCULOS
+    'SAT-8611': 'Vehículos Traspasos Gestión',
+    'SAT-2311': 'Vehículos Traspasos IVA',
+    'SAT-4041': 'IPRIMA Unitario',
+    'SAT-4081': 'IPRIMA Múltiple',
+    'SAT-4091': 'Vehículos Circulación',
+    'SAT-8620': 'Primeras Placas',
+    'SAT-8933': 'Vehículos Reposiciones Modificaciones',
+    'SAT-4121': 'Vehículos Marítimos',
+    'SAT-4131': 'Vehículos Aéreos',
+    'SAT-8370': 'Gestión de Vehículos',
+    // 6. ADUANAS
+    'SAT-8540': 'Aduana ATC',
+    'SAT-8530': 'Aduana Específicos y Otros',
+    'SAT-8560': 'Pago Declaración Aduanera',
+    // 7. VARIOS
+    'SAT-0811': 'Ingresos Cobranza',
+    'SAT-8421': 'Solvencia Fiscal',
+    'SAT-8401': 'Certificación Jurídica',
+    'SAT-7121': 'Habilitación Libros',
+    'SAT-0891': 'Facilidades de Pago',
+    'SAT-0850': 'Sanciones no Exoneradas',
+    'SAT-9911': 'Autocapacitación',
+    'SAT-8008': 'Recibo Pago Ramo Aduanas',
+    'SAT-8028': 'Privativos SAT'
+}
+
 type FileStatus = 'pending' | 'ready' | 'uploading' | 'success' | 'error'
 
 interface ImportItem {
@@ -55,6 +165,7 @@ interface ImportItem {
     fiscalYear: number
     month: number | null
     docType: string // internal type key
+    satCode?: string // e.g. SAT-2237
 }
 
 export function MassUploader() {
@@ -135,13 +246,27 @@ export function MassUploader() {
 
         // 3. Type Extraction
         let docType = 'other'
+        let satCode = undefined
         const lowerName = name.toLowerCase()
-        if (lowerName.includes('constancia')) docType = 'receipt' // Or 'other'? Usually Constancia ~ Certificate/Receipt
-        else {
-            for (const [key, type] of Object.entries(DOCUMENT_TYPES)) {
-                if (lowerName.includes(key)) {
-                    docType = type
-                    break
+
+        // 3a. Priority: Match by SAT Form Code
+        const satMatch = name.match(/SAT-(\d{4})/i)
+        if (satMatch) {
+            satCode = `SAT-${satMatch[1].toUpperCase()}`
+            if (SAT_CODE_MAP[satCode]) {
+                docType = SAT_CODE_MAP[satCode]
+            }
+        }
+
+        // 3b. Fallback: Keyword Detection
+        if (docType === 'other') {
+            if (lowerName.includes('constancia')) docType = 'receipt'
+            else {
+                for (const [key, type] of Object.entries(DOCUMENT_TYPES)) {
+                    if (lowerName.includes(key)) {
+                        docType = type
+                        break
+                    }
                 }
             }
         }
@@ -158,7 +283,8 @@ export function MassUploader() {
             clientId: client?.id || null, // No client ID yet
             fiscalYear,
             month,
-            docType
+            docType,
+            satCode
         }
     }, [findClientByNit])
 
@@ -212,6 +338,22 @@ export function MassUploader() {
         }))
     }
 
+    const applyBulkType = (type: string) => {
+        setItems(prev => prev.map(item => ({ ...item, docType: type })))
+        const label = DOC_TYPE_OPTIONS.find(o => o.value === type)?.label
+        toast.info(`Tipo cambiado a "${label}" para todos`, { icon: <Check className="h-4 w-4 text-emerald-500" /> })
+    }
+
+    const applyBulkMonth = (month: number | null) => {
+        setItems(prev => prev.map(item => ({ ...item, month })))
+        toast.info(`Mes actualizado para todos`)
+    }
+
+    const applyBulkYear = (year: number) => {
+        setItems(prev => prev.map(item => ({ ...item, fiscalYear: year })))
+        toast.info(`Año actualizado para todos`)
+    }
+
     const handleUploadAll = async () => {
         const readyItems = items.filter(i => i.status === 'ready')
         if (readyItems.length === 0) return
@@ -233,16 +375,25 @@ export function MassUploader() {
 
             try {
                 const monthName = Object.entries(MONTHS_ES).find(([k, v]) => v === item.month)?.[0] || 'general'
+                
+                // Determine Folder Name: SAT Description or Type Label
+                const formName = (item.satCode && SAT_NAMES_MAP[item.satCode]) 
+                    || DOC_TYPE_OPTIONS.find(o => o.value === item.docType)?.label 
+                    || 'Otros'
 
-                // 1. Ensure Folder Structure Exists
-                const targetFolderId = await ensureClientFolderStructure(item.clientId, item.fiscalYear, monthName)
+                // 1. Ensure Folder Structure Exists: (Year / Month / Form Name)
+                const targetFolderId = await ensureClientFolderStructure(
+                    item.clientId, 
+                    item.fiscalYear, 
+                    monthName,
+                    formName
+                )
 
-                if (!targetFolderId) {
-                    throw new Error("Fallo al crear carpetas")
-                }
+                if (!targetFolderId) throw new Error("Fallo al crear carpetas")
 
                 // 2. Upload to Storage
-                const filePath = `${item.clientId}/${item.fiscalYear}/${monthName}/${Date.now()}-${item.file.name}`
+                const folderPath = `${item.clientId}/${item.fiscalYear}/${monthName}/${formName}/`
+                const filePath = `${folderPath}${Date.now()}-${item.file.name}`
 
                 const { error: uploadError } = await supabase.storage
                     .from('documents')
@@ -323,15 +474,15 @@ export function MassUploader() {
                 <div className="border rounded-xl bg-card shadow-sm overflow-hidden text-sm">
                     <div className="p-4 border-b flex items-center justify-between bg-muted/20">
                         <div className="flex items-center gap-2">
-                            <h3 className="font-semibold">Archivos en Cola ({items.length})</h3>
+                            <h3 className="font-semibold text-foreground">Archivos en Cola ({items.length})</h3>
                         </div>
                         <div className="flex gap-2">
-                            <Button variant="ghost" size="sm" onClick={() => setItems([])}>Limpiar</Button>
+                            <Button variant="ghost" size="sm" onClick={() => setItems([])} className="h-8 text-xs">Limpiar</Button>
                             <Button
                                 size="sm"
                                 onClick={handleUploadAll}
                                 disabled={isUploading || pendingCount === 0}
-                                className="font-bold min-w-[140px]"
+                                className="font-bold min-w-[140px] h-8 text-xs"
                             >
                                 {isUploading ? (
                                     <>
@@ -348,6 +499,59 @@ export function MassUploader() {
                         </div>
                     </div>
 
+                    {/* Bulk Edit Bar */}
+                    <div className="flex flex-wrap gap-4 items-center bg-muted/40 px-6 py-2.5 border-b">
+                        <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider h-8">
+                            <Filter className="h-3.5 w-3.5" />
+                            Ajustes Masivos:
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                            <Select onValueChange={applyBulkType}>
+                                <SelectTrigger className="h-8 text-[11px] w-[150px] bg-background">
+                                    <SelectValue placeholder="Tipo de Documento" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {DOC_TYPE_OPTIONS.map(opt => (
+                                        <SelectItem key={opt.value} value={opt.value} className="text-xs">{opt.label}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+
+                            <Select onValueChange={(val) => applyBulkMonth(val === "none" ? null : parseInt(val))}>
+                                <SelectTrigger className="h-8 text-[11px] w-[110px] bg-background">
+                                    <SelectValue placeholder="Mes Fiscal" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="none" className="text-xs">-- Sin Mes --</SelectItem>
+                                    {Object.entries(MONTHS_ES).map(([k, v]) => (
+                                        <SelectItem key={v} value={v.toString()} className="capitalize text-xs">{k}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+
+                            <Input
+                                type="number"
+                                placeholder="Año"
+                                className="h-8 text-[11px] w-[80px] bg-background"
+                                onBlur={(e) => {
+                                    const year = parseInt(e.target.value)
+                                    if (year > 1900 && year < 2100) applyBulkYear(year)
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        const year = parseInt(e.currentTarget.value)
+                                        if (year > 1900 && year < 2100) applyBulkYear(year)
+                                    }
+                                }}
+                            />
+                        </div>
+                        <div className="hidden lg:block h-4 w-px bg-border mx-2" />
+                        <p className="text-[10px] text-muted-foreground italic hidden lg:block">
+                            * Los cambios aplicados aquí afectarán a todos los archivos cargados.
+                        </p>
+                    </div>
+
                     <div className="overflow-x-auto">
                         <Table>
                             <TableHeader>
@@ -357,7 +561,8 @@ export function MassUploader() {
                                     <TableHead className="w-[250px]">Cliente Asignado</TableHead>
                                     <TableHead className="w-[120px]">Periodo</TableHead>
                                     <TableHead className="w-[140px]">Tipo</TableHead>
-                                    <TableHead className="text-right w-[100px]">Estado</TableHead>
+                                    <TableHead className="w-[100px]">Formulario</TableHead>
+                                    <TableHead className="text-right w-[80px]">Estado</TableHead>
                                     <TableHead className="w-[50px]"></TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -444,20 +649,20 @@ export function MassUploader() {
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    {Object.entries({
-                                                        invoice: 'Factura',
-                                                        declaration: 'Declaración',
-                                                        receipt: 'Recibo',
-                                                        financial_statement: 'Est. Financiero',
-                                                        contract: 'Contrato',
-                                                        deed: 'Escritura',
-                                                        patent: 'Patente',
-                                                        other: 'Otro'
-                                                    }).map(([k, label]) => (
-                                                        <SelectItem key={k} value={k} className="text-xs">{label}</SelectItem>
+                                                    {DOC_TYPE_OPTIONS.map(opt => (
+                                                        <SelectItem key={opt.value} value={opt.value} className="text-xs">{opt.label}</SelectItem>
                                                     ))}
                                                 </SelectContent>
                                             </Select>
+                                        </TableCell>
+
+                                        <TableCell className="align-top">
+                                            <Input
+                                                value={item.satCode || ''}
+                                                onChange={(e) => updateItem(item.id, { satCode: e.target.value.toUpperCase() })}
+                                                className="h-8 text-[10px] font-mono w-full"
+                                                placeholder="SAT-XXXX"
+                                            />
                                         </TableCell>
 
                                         <TableCell className="text-right align-top pt-2">
@@ -482,3 +687,4 @@ export function MassUploader() {
         </div>
     )
 }
+

@@ -83,3 +83,4 @@ export function StatsCharts({ clientStatusData, documentsData }: StatsChartsProp
         </div>
     )
 }
+

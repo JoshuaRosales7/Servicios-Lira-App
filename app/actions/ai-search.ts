@@ -204,3 +204,4 @@ export async function processNaturalLanguageQuery(query: string): Promise<AISear
         }
     }
 }
+

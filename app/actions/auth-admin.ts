@@ -8,3 +8,4 @@ export async function getClientAuth(userId: string) {
     if (error) return null
     return data.user
 }
+

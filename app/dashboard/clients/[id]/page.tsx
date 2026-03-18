@@ -41,17 +41,20 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
     supabase.from('fiscal_data').select('*').eq('client_id', id).maybeSingle(),
     supabase.from('legal_data').select('*').eq('client_id', id).maybeSingle(),
     supabase.from('banking_data').select('*').eq('client_id', id).order('created_at', { ascending: false }),
-    supabase.from('accounting_data').select('*').eq('client_id', id).maybeSingle(),
+    supabase.from('accounting_data').select('*').eq('client_id', id).order('fiscal_year', { ascending: false }),
     getDocumentCounts(id),
     supabase.from('notes').select('*').eq('client_id', id).order('created_at', { ascending: false }),
     getClientActivityLogs(id, 20),
   ])
 
+  // Get current year or latest one for the form
+  const currentAccounting = accountingData && accountingData.length > 0 ? accountingData[0] : null
+
   const missingSections = [
-    { label: 'Historia', status: logs && logs.length > 0 },
+    { label: 'Historia', status: !!(logs && logs.length > 0) },
     { label: 'Fiscal', status: !!fiscalData },
     { label: 'Legal', status: !!legalData },
-    { label: 'Contabilidad', status: !!accountingData },
+    { label: 'Contabilidad', status: !!(accountingData && accountingData.length > 0) },
   ].filter(s => !s.status).map(s => s.label)
 
   const isProfileIncomplete = missingSections.length > 0
@@ -59,7 +62,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex items-center justify-between pb-4 border-b border-border">
         <div className="flex items-center gap-3">
           <Link href="/dashboard/clients">
             <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg">
@@ -115,14 +118,14 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
         {/* Sidebar */}
         <div className="lg:col-span-1 space-y-4">
           {/* Profile Card */}
-          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-            <div className="h-20 bg-slate-100 dark:bg-slate-800 relative">
+          <div className="bg-card rounded-xl border border-border overflow-hidden">
+            <div className="h-20 bg-muted/50 relative">
               <div className="absolute -bottom-8 left-5">
-                <div className="h-16 w-16 rounded-xl bg-white dark:bg-slate-900 border-2 border-white dark:border-slate-900 shadow flex items-center justify-center">
+                <div className="h-16 w-16 rounded-xl bg-card border-2 border-card shadow flex items-center justify-center">
                   {client.person_type === 'juridica' ? (
-                    <Building2 className="h-7 w-7 text-slate-400" />
+                    <Building2 className="h-7 w-7 text-muted-foreground/60" />
                   ) : (
-                    <User className="h-7 w-7 text-slate-400" />
+                    <User className="h-7 w-7 text-muted-foreground/60" />
                   )}
                 </div>
               </div>
@@ -130,8 +133,8 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                 <span className={cn(
                   "text-[10px] px-2 py-0.5 rounded-md font-semibold",
                   client.fiscal_status === 'active'
-                    ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400"
-                    : "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400"
+                    ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400"
+                    : "bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400"
                 )}>
                   {client.fiscal_status === 'active' ? 'Activo' : 'Inactivo'}
                 </span>
@@ -160,15 +163,20 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                 )}
               </div>
 
-              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-3">
+              <div className="pt-3 border-t border-border/60 grid grid-cols-2 gap-3">
                 <div>
-                  <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-0.5">DPI</p>
-                  <p className="font-mono text-xs text-slate-700 dark:text-slate-300">{client.dpi || 'N/A'}</p>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-0.5">DPI</p>
+                  <p className="font-mono text-xs text-foreground/80">{client.dpi || 'N/A'}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-0.5">Registrado</p>
-                  <p className="text-xs text-slate-700 dark:text-slate-300">
-                    {new Date(client.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-0.5">
+                    {client.person_type === 'individual' ? 'F. Nacimiento' : 'F. Registro'}
+                  </p>
+                  <p className="text-xs text-foreground/80">
+                    {client.start_date 
+                      ? new Date(client.start_date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })
+                      : new Date(client.created_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })
+                    }
                   </p>
                 </div>
               </div>
@@ -200,9 +208,9 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
 
         {/* Main Content */}
         <div className="lg:col-span-3 space-y-6">
-          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <div className="bg-card rounded-xl border border-border overflow-hidden">
             <Tabs defaultValue="timeline" className="w-full">
-              <div className="border-b border-slate-100 dark:border-slate-800 px-6 overflow-x-auto bg-slate-50/50 dark:bg-slate-900/20">
+              <div className="border-b border-border/80 px-6 overflow-x-auto bg-muted/20">
                 <TabsList className="bg-transparent h-12 w-full justify-start gap-6 p-0">
                   {[
                     { value: 'timeline', label: 'Historia', icon: Activity, always: true },
@@ -218,7 +226,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                     return (
                       <TabsTrigger key={tab.value} value={tab.value} disabled={!reallyAvailable}
                         className={cn(
-                          "h-12 rounded-none border-b-2 border-transparent bg-transparent px-0 text-sm font-medium text-slate-500 shadow-none data-[state=active]:border-blue-600 data-[state=active]:text-slate-900 dark:data-[state=active]:text-white whitespace-nowrap",
+                          "h-12 rounded-none border-b-2 border-transparent bg-transparent px-0 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:border-primary data-[state=active]:text-foreground whitespace-nowrap",
                           !reallyAvailable && "opacity-40 cursor-not-allowed hidden md:inline-flex"
                         )}>
                         <div className="flex items-center gap-1.5 relative">
@@ -259,9 +267,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                     </div>
                     <FiscalDataForm clientId={id} fiscalData={fiscalData} />
                   </TabsContent>
-                )}
-
-                {canAccessFullDetail && (
+                )}                {canAccessFullDetail && (
                   <TabsContent value="legal" className="mt-0 space-y-4">
                     <div>
                       <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-0.5">Información Legal</h3>
@@ -270,7 +276,6 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                     <LegalDataForm clientId={id} legalData={legalData} />
                   </TabsContent>
                 )}
-
                 {canAccessFullDetail && (
                   <TabsContent value="banking" className="mt-0 space-y-4">
                     <div>
@@ -287,7 +292,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
                       <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-0.5">Información Contable</h3>
                       <p className="text-xs text-slate-500">Sistemas de costeo y plataformas contables.</p>
                     </div>
-                    <AccountingDataForm clientId={id} accountingData={accountingData} />
+                    <AccountingDataForm clientId={id} accountingData={currentAccounting} />
                   </TabsContent>
                 )}
 
@@ -308,12 +313,12 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
       </div>
 
       {/* Documents — full width below */}
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center gap-3 bg-slate-50/50 dark:bg-slate-900/20">
-          <FileText className="h-4 w-4 text-slate-400" />
+      <div className="bg-card rounded-xl border border-border overflow-hidden">
+        <div className="px-6 py-4 border-b border-border flex items-center gap-3 bg-muted/20">
+          <FileText className="h-4 w-4 text-muted-foreground/60" />
           <div>
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Expediente Central</h3>
-            <p className="text-xs text-slate-500 mt-0.5">Archivos y documentos oficiales del cliente</p>
+            <h3 className="text-sm font-semibold text-foreground">Expediente Central</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">Archivos y documentos oficiales del cliente</p>
           </div>
         </div>
         <div className="p-6">

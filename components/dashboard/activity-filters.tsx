@@ -155,3 +155,4 @@ export function ActivityFilters() {
         </div>
     )
 }
+
